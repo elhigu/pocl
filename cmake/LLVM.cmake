@@ -63,6 +63,7 @@ run_llvm_config(LLVM_LIBS --libs)
 run_llvm_config(LLVM_LIBFILES --libfiles)
 run_llvm_config(LLVM_ALL_TARGETS --targets-built)
 run_llvm_config(LLVM_HOST_TARGET --host-target)
+run_llvm_config(LLVM_BINDIR --bindir)
 # Ubuntu's llvm reports "arm-unknown-linux-gnueabihf" triple, then if one tries
 # `clang --target=arm-unknown-linux-gnueabihf ...` it will produce armv6 code,
 # even if one's running armv7;
@@ -113,7 +114,14 @@ set(LLVM_CXXFLAGS "${LLVM_CXXFLAGS} -fno-rtti")
 ####################################################################
 
 macro(find_program_or_die OUTPUT_VAR PROG_NAME DOCSTRING)
-  find_program(${OUTPUT_VAR} NAMES "${PROG_NAME}${LLVM_BINARY_SUFFIX}${CMAKE_EXECUTABLE_SUFFIX}" "${PROG_NAME}${CMAKE_EXECUTABLE_SUFFIX}" DOC "${DOCSTRING}")
+  find_program(${OUTPUT_VAR}
+    NAMES
+      "${PROG_NAME}${LLVM_BINARY_SUFFIX}${CMAKE_EXECUTABLE_SUFFIX}"
+      "${PROG_NAME}${CMAKE_EXECUTABLE_SUFFIX}"
+    DOC "${DOCSTRING}"
+    HINTS ${LLVM_BINDIR}
+  )
+
   if(${OUTPUT_VAR})
     message(STATUS "Found ${PROG_NAME}: ${${OUTPUT_VAR}}")
   else()
