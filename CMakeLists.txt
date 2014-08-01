@@ -48,8 +48,7 @@ if(UNIX)
   endif()
 
 else()
-  # todo other platforms
-  message(FATAL_ERROR "not implemented yet")
+  # No installing for windows... 
 endif()
 
 
@@ -60,20 +59,23 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ######################################################################################
 # AC_CONFIG_TESTDIR([tests])
-enable_testing()
-
-######################################################################################
-
-find_package(PkgConfig MODULE REQUIRED)
-
-pkg_check_modules(HWLOC REQUIRED hwloc>=1.0)
-if(NOT HWLOC_FOUND)
-  message(FATAL_ERROR "hwloc package is required!")
+if(UNIX)
+  enable_testing()
+else()
+  message(STATUS "Running tests is supported only in *nix for now.")
 endif()
 
 ######################################################################################
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+find_package( Hwloc )
+
+if(NOT Hwloc_FOUND)
+  message(FATAL_ERROR "hwloc package is required!")
+endif()
+
+######################################################################################
+
 include(LLVM RESULT_VARIABLE RES)
 if(NOT RES)
   message(FATAL_ERROR "Could not load LLVM.cmake")

@@ -10,7 +10,13 @@ if(DEFINED WITH_LLVM_CONFIG AND WITH_LLVM_CONFIG)
   endif()
 else()
   # search for any version
-  find_program(LLVM_CONFIG NAMES "llvm-config" "llvm-config-mp-3.3" "llvm-config-3.3" "llvm-config33" "llvm-config-mp-3.4" "llvm-config-3.4" "llvm-config34" "llvm-config-mp-3.2" "llvm-config-3.2" "llvm-config32" DOC "llvm-config executable")
+  find_program(LLVM_CONFIG 
+    NAMES 
+      "llvm-config" "llvm-config-mp-3.3" "llvm-config-3.3" "llvm-config33" 
+      "llvm-config-mp-3.4" "llvm-config-3.4" "llvm-config34" "llvm-config-mp-3.2" 
+      "llvm-config-3.2" "llvm-config32" 
+    DOC "llvm-config executable"
+  )
 endif()
 
 set(WITH_LLVM_CONFIG "${WITH_LLVM_CONFIG}" CACHE PATH "Path to preferred llvm-config")
@@ -155,7 +161,7 @@ macro(custom_try_compile_any COMPILER SUFFIX SOURCE RES_VAR)
   execute_process(COMMAND "${COMPILER}" ${ARGN} "${RANDOM_FILENAME}" RESULT_VARIABLE ${RES_VAR} OUTPUT_VARIABLE OV ERROR_VARIABLE EV)
   if(${${RES_VAR}})
     message(STATUS " ########## The command: ")
-    message(STATUS "${COMPILER} ${ARGN} ${RANDOM_FILENAME}")
+    message(STATUS "${COMPILER}" "${ARGN}" "${RANDOM_FILENAME}")
     message(STATUS " ########## Exited with nonzero status: ${${RES_VAR}}")
     if(OV)
       message(STATUS "STDOUT: ${OV}")
@@ -164,7 +170,7 @@ macro(custom_try_compile_any COMPILER SUFFIX SOURCE RES_VAR)
       message(STATUS "STDERR: ${EV}")
     endif()
   endif()
-  file(REMOVE "${RANDOM_FILENAME}")
+  #file(REMOVE "${RANDOM_FILENAME}")
 
 endmacro()
 
@@ -185,7 +191,7 @@ endmacro()
 macro(custom_try_compile_clangxx SOURCE1 SOURCE2 RES_VAR)
   # this is wrong
   #separate_arguments(FLAGS UNIX_COMMAND "${LLVM_CXXFLAGS}")
-  custom_try_compile_c_cxx("${CLANGXX}" "cc" "${SOURCE1}" "${SOURCE2}" ${RES_VAR}  "-c" ${ARGN})
+  custom_try_compile_c_cxx("${CLANGXX}" "cc" "${SOURCE1}" "${SOURCE2}" "${RES_VAR}"  "-c" "${ARGN}")
 endmacro()
 
 # clang try-compile-run macro, running via native executable
