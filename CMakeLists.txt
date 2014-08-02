@@ -229,20 +229,24 @@ option(CUSTOM_BUFFER_ALLOCATOR "Use a custom OpenCL optimized region-based memor
 
 ######################################################################################
 
-find_library(LTDL_LIB "ltdl")
-find_file(LTDL_H "ltdl.h")
-if(LTDL_LIB AND LTDL_H)
-  message(STATUS "ltdl found")
-
-  get_filename_component(LTDL_H_INCLUDE_DIR "${LTDL_H}" DIRECTORY)
-  string(FIND "${CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES}" "${LTDL_H_INCLUDE_DIR}" LTPOSITION)
-  # include the directory of ltdl.h, if its not in the default system include dirs
-  if(LTPOSITION LESS "0")
-    include_directories("${LTDL_H_INCLUDE_DIR}")
-  endif()
-
+if(WIN32)
+    message(STATUS "TODO: check if ltdl work in windows or just use LoadLibrary/FreeLibrary directly.")
 else()
-  message(FATAL_ERROR "Could not find LTDL library!")
+  find_library(LTDL_LIB "ltdl")
+  find_file(LTDL_H "ltdl.h")
+  if(LTDL_LIB AND LTDL_H)
+    message(STATUS "ltdl found")
+
+    get_filename_component(LTDL_H_INCLUDE_DIR "${LTDL_H}" DIRECTORY)
+    string(FIND "${CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES}" "${LTDL_H_INCLUDE_DIR}" LTPOSITION)
+    # include the directory of ltdl.h, if its not in the default system include dirs
+    if(LTPOSITION LESS "0")
+      include_directories("${LTDL_H_INCLUDE_DIR}")
+    endif()
+
+  else()
+    message(FATAL_ERROR "Could not find LTDL library!")
+  endif()
 endif()
 
 ######################################################################################
@@ -257,51 +261,57 @@ endif()
 ######################################################################################
 # DONE
 
-if(NOT DEFINED DEFAULT_ENABLE_ICD)
+if(WIN32)
+  message(STATUS "TODO: We could use FindOpenCL.cmake to checkout if there is ICD loader installed in Windows.")
+  set(DEFAULT_ENABLE_ICD TRUE)
+  set(TESTS_USE_ICD TRUE)
+else()
+  if(NOT DEFINED DEFAULT_ENABLE_ICD)
 
-  pkg_check_modules(OCL_ICD ocl-icd>=1.3)
+    pkg_check_modules(OCL_ICD ocl-icd>=1.3)
 
-  if(OCL_ICD_FOUND)
+    if(OCL_ICD_FOUND)
 
-    set(HAVE_OCL_ICD 1)
-    set(OPENCL_FOUND 1)
-    set(OPENCL_LIBRARIES "-lOpenCL") # duh, why doesnt ocl-icd set this in .pc file ??
-    set(DEFAULT_ENABLE_ICD 1 CACHE INTERNAL "ICD loader availability")
-    set(DEFAULT_DIRECT_LINKAGE 0 CACHE INTERNAL "direct linkage")
-    set(DEFAULT_TESTS_USE_ICD 1 CACHE INTERNAL "tests use ICD")
-
-  else()
-
-    set(HAVE_OCL_ICD 0)
-    # fallback to other ICD loaders
-    message(STATUS "ocl-icd not found -> trying fallback ICD implementations")
-    pkg_check_modules(OPENCL OpenCL>=1.2)
-    if(NOT OPENCL_FOUND)
-      find_library(OPENCL_LIBRARIES OpenCL)
-      # version check the found library
-      if(OPENCL_LIBRARIES)
-        set(CMAKE_REQUIRED_LIBRARIES "${OPENCL_LIBRARIES}")
-        CheckFunctionExists("clEnqueueFillImage" OPENCL_FOUND)
-      endif()
-    endif()
-
-    if(OPENCL_FOUND)
-      # no ocl-icd, but libopencl
-      message(STATUS "libOpenCL (unknown ICD loader) found")
+      set(HAVE_OCL_ICD 1)
+      set(OPENCL_FOUND 1)
+      set(OPENCL_LIBRARIES "-lOpenCL") # duh, why doesnt ocl-icd set this in .pc file ??
       set(DEFAULT_ENABLE_ICD 1 CACHE INTERNAL "ICD loader availability")
-      # tests can't use the icl loader - must use direct linkage
-      set(DEFAULT_DIRECT_LINKAGE 1 CACHE INTERNAL "direct linkage")
-      set(DEFAULT_TESTS_USE_ICD 0 CACHE INTERNAL "tests use ICD")
+      set(DEFAULT_DIRECT_LINKAGE 0 CACHE INTERNAL "direct linkage")
+      set(DEFAULT_TESTS_USE_ICD 1 CACHE INTERNAL "tests use ICD")
+
     else()
-      message(STATUS "No ICD loader of any kind found (or its OpenCL version is <1.2)")
-      # no ocl-icd, no libopencl
-      set(DEFAULT_ENABLE_ICD 0 CACHE INTERNAL "no ICL loader found availability")
-      set(DEFAULT_DIRECT_LINKAGE 1 CACHE INTERNAL "direct linkage")
-      set(DEFAULT_TESTS_USE_ICD 0 CACHE INTERNAL "tests use ICD")
+
+      set(HAVE_OCL_ICD 0)
+      # fallback to other ICD loaders
+      message(STATUS "ocl-icd not found -> trying fallback ICD implementations")
+      pkg_check_modules(OPENCL OpenCL>=1.2)
+      if(NOT OPENCL_FOUND)
+        find_library(OPENCL_LIBRARIES OpenCL)
+        # version check the found library
+        if(OPENCL_LIBRARIES)
+          set(CMAKE_REQUIRED_LIBRARIES "${OPENCL_LIBRARIES}")
+          CheckFunctionExists("clEnqueueFillImage" OPENCL_FOUND)
+        endif()
+      endif()
+
+      if(OPENCL_FOUND)
+        # no ocl-icd, but libopencl
+        message(STATUS "libOpenCL (unknown ICD loader) found")
+        set(DEFAULT_ENABLE_ICD 1 CACHE INTERNAL "ICD loader availability")
+        # tests can't use the icl loader - must use direct linkage
+        set(DEFAULT_DIRECT_LINKAGE 1 CACHE INTERNAL "direct linkage")
+        set(DEFAULT_TESTS_USE_ICD 0 CACHE INTERNAL "tests use ICD")
+      else()
+        message(STATUS "No ICD loader of any kind found (or its OpenCL version is <1.2)")
+        # no ocl-icd, no libopencl
+        set(DEFAULT_ENABLE_ICD 0 CACHE INTERNAL "no ICL loader found availability")
+        set(DEFAULT_DIRECT_LINKAGE 1 CACHE INTERNAL "direct linkage")
+        set(DEFAULT_TESTS_USE_ICD 0 CACHE INTERNAL "tests use ICD")
+      endif()
+
     endif()
 
   endif()
-
 endif()
 
 setup_cached_var(ENABLE_ICD "Using an ICD loader"
@@ -402,11 +412,15 @@ endif()
 ######################################################################################
 # DONE
 
-pkg_check_modules(GLEW glew)
-if(NOT GLEW_FOUND)
-  message(WARNING "libGLEW not found. A few tests will not work")
+if(WIN32)
+  message(STATUS "Consider writing find script for libGLEW for windows... some tests require it")
 else()
-  set(HAVE_GLEW 1)
+  pkg_check_modules(GLEW glew)
+  if(NOT GLEW_FOUND)
+    message(WARNING "libGLEW not found. A few tests will not work")
+  else()
+    set(HAVE_GLEW 1)
+  endif()
 endif()
 
 ######################################################################################
