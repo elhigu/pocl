@@ -59,6 +59,9 @@ run_llvm_config( LLVM_VERSION_FULL --version)
 string(REGEX REPLACE "([0-9]+)\\.([0-9]+).*" "\\1.\\2" LLVM_VERSION "${LLVM_VERSION_FULL}")
 message(STATUS "LLVM_VERSION: ${LLVM_VERSION}")
 
+# Theses values are valid for the host compiler that was used to compile LLVM
+# so e.g. for Visual Studio in Windows, the same flags does not necessarily work
+# for any compiler.
 run_llvm_config(LLVM_CFLAGS --cflags)
 run_llvm_config(LLVM_CXXFLAGS --cxxflags)
 run_llvm_config(LLVM_CPPFLAGS --cppflags)
@@ -70,6 +73,7 @@ run_llvm_config(LLVM_LIBFILES --libfiles)
 run_llvm_config(LLVM_ALL_TARGETS --targets-built)
 run_llvm_config(LLVM_HOST_TARGET --host-target)
 run_llvm_config(LLVM_BINDIR --bindir)
+
 # Ubuntu's llvm reports "arm-unknown-linux-gnueabihf" triple, then if one tries
 # `clang --target=arm-unknown-linux-gnueabihf ...` it will produce armv6 code,
 # even if one's running armv7;
@@ -125,7 +129,7 @@ macro(find_program_or_die OUTPUT_VAR PROG_NAME DOCSTRING)
       "${PROG_NAME}${LLVM_BINARY_SUFFIX}${CMAKE_EXECUTABLE_SUFFIX}"
       "${PROG_NAME}${CMAKE_EXECUTABLE_SUFFIX}"
     DOC "${DOCSTRING}"
-    HINTS ${LLVM_BINDIR}
+    HINTS "${LLVM_BINDIR}"
   )
 
   if(${OUTPUT_VAR})
@@ -145,7 +149,7 @@ if(CLANGXX_RES OR CLANG_RES)
 endif()
 
 find_program_or_die(LLVM_OPT "opt" "LLVM optimizer")
-find_program_or_die(LLC "llc" "LLVM static compiler") # TODO rename to LLVM_LLC
+find_program_or_die(LLVM_LLC "llc" "LLVM static compiler")
 find_program_or_die(LLVM_AS "llvm-as" "LLVM assembler")
 find_program_or_die(LLVM_LINK "llvm-link" "LLVM IR linker")
 find_program_or_die(LLVM_LLI "lli" "LLVM interpreter")
@@ -341,7 +345,7 @@ endmacro()
 # clangxx works check
 
 if(CLANGXX)
-
+  
   message(STATUS "Checking if clang++ works (required by vecmathlib)")
 
   setup_cache_var_name(CLANGXX_WORKS "${LLVM_HOST_TARGET}-${CLANGXX}-${LLVM_CLANGXX_VERSION}")
@@ -375,7 +379,13 @@ if(NOT LLVM_CXXFLAGS MATCHES "-DNDEBUG")
 
   message(STATUS "Checking if LLVM is built with assertions")
   separate_arguments(_FLAGS UNIX_COMMAND "${LLVM_CXXFLAGS}")
-  custom_try_compile_clangxx("#include <llvm/Support/Debug.h>" "llvm::DebugFlag=true;" COMPILE_RESULT ${_FLAGS} "-UNDEBUG")
+  
+  # TODO: We can't use CLANG here, but we need the same compiler that was used to compile
+  #       llvm so to make LLVM_CXXFLAGS compatible. E.g. if llvm was compiled with Visual Studio
+  #       LLVM_CXXFLAGS will not make sense for clang.
+  # custom_try_compile_clangxx("#include <llvm/Support/Debug.h>" "llvm::DebugFlag=true;" COMPILE_RESULT ${_FLAGS} "-UNDEBUG")
+  set(COMPILE_RESULT TRUE)
+
   if(COMPILE_RESULT)
     message(STATUS "no assertions... adding -DNDEBUG")
     set(LLVM_CXXFLAGS "${LLVM_CXXFLAGS} -DNDEBUG")
@@ -406,7 +416,14 @@ setup_cache_var_name(LLC_TRIPLE "LLC_TRIPLE-${LLVM_HOST_TARGET}-${CLANG}")
 
 if(NOT DEFINED ${CACHE_VAR_NAME})
   message(STATUS "Find out LLC target triple (for host ${LLVM_HOST_TARGET})")
-  execute_process(COMMAND ${CLANG} "${CLANG_TARGET_OPTION}${LLVM_HOST_TARGET}" -x c /dev/null -S -emit-llvm -o - RESULT_VARIABLE RES_VAR OUTPUT_VARIABLE OUTPUT_VAR)
+  SET (_EMPTY_H_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/empty.h")
+  FILE (WRITE "${_EMPTY_H_FILE}" "")
+  execute_process(
+    COMMAND 
+      ${CLANG} "${CLANG_TARGET_OPTION}${LLVM_HOST_TARGET}" -x c ${_EMPTY_H_FILE} -S -emit-llvm -o - 
+    RESULT_VARIABLE RES_VAR 
+    OUTPUT_VARIABLE OUTPUT_VAR
+  )
   if(RES_VAR)
     message(FATAL_ERROR "Error ${RES_VAR} while determining target triple")
   endif()
@@ -425,11 +442,11 @@ set_cache_var(LLC_TRIPLE "LLC_TRIPLE")
 
 
 
-setup_cache_var_name(LLC_HOST_CPU "LLC_HOST_CPU-${LLVM_HOST_TARGET}-${LLC}")
+setup_cache_var_name(LLC_HOST_CPU "LLC_HOST_CPU-${LLVM_HOST_TARGET}-${LLVM_LLC}")
 
 if(NOT DEFINED ${CACHE_VAR_NAME})
-  message(STATUS "Find out LLC host CPU with ${LLC}")
-  execute_process(COMMAND ${LLC} "--version" RESULT_VARIABLE RES_VAR OUTPUT_VARIABLE OUTPUT_VAR)
+  message(STATUS "Find out LLC host CPU with ${LLVM_LLC}")
+  execute_process(COMMAND ${LLVM_LLC} "--version" RESULT_VARIABLE RES_VAR OUTPUT_VARIABLE OUTPUT_VAR)
   # WTF, ^^ has return value 1
   #if(RES_VAR)
   #  message(FATAL_ERROR "Error ${RES_VAR} while determining LLC host CPU")
