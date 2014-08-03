@@ -7,50 +7,55 @@ set(VERSION_SUFFIX "-pre")
 set(VERSION_STRING ${MAJOR_VERSION}.${MINOR_VERSION}${VERSION_SUFFIX})
 set(POCL_VERSION ${VERSION_STRING})
 
-
-
 ######################################################################################
 
 if(UNIX)
   include(GNUInstallDirs)
-
-  # for libpocl.so
-  set(POCL_INSTALL_PUBLIC_LIBDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH "POCL public libdir")
-
-  # for llvmopencl.so
-  set(POCL_INSTALL_PRIVATE_LIBDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pocl" CACHE PATH "POCL private libdir")
-
-  # for pocl.icd
-  set(POCL_INSTALL_ICD_VENDORDIR "/etc/OpenCL/vendors" CACHE PATH "POCL ICD file destination")
-
-  # for kernel-<target>.bc
-  set(POCL_INSTALL_PRIVATE_DATADIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/pocl" CACHE PATH "POCL private datadir")
-
-  # for poclu.h
-  set(POCL_INSTALL_PUBLIC_HEADER_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}" CACHE PATH "POCL public header dir")
-
-  # for _kernel.h et al
-  set(POCL_INSTALL_PRIVATE_HEADER_DIR "${POCL_INSTALL_PRIVATE_DATADIR}/include" CACHE PATH "POCL private header dir")
-
-  # for pocl-standalone et al
-  set(POCL_INSTALL_PUBLIC_BINDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}" CACHE PATH "POCL public bindir")
-
-  # for PoclConfig.cmake & stuff
-  set(POCL_INSTALL_CMAKE_CONFIG_DIR "${POCL_INSTALL_PRIVATE_LIBDIR}" CACHE PATH   "Installation directory for CMake files")
-
-  # TODO maybe use output of pkg-config --variable=pc_path pkg-config ?
-  set(POCL_INSTALL_PKGCONFIG_DIR "${POCL_INSTALL_PUBLIC_LIBDIR}/pkgconfig" CACHE PATH "Destination for pocl.pc")
-
-  if(APPLE)
-    set(POCL_INSTALL_OPENCL_HEADER_DIR "${POCL_INSTALL_PUBLIC_HEADER_DIR}/OpenCL" CACHE PATH "POCL header dir for OpenCL headers")
-  else()
-    set(POCL_INSTALL_OPENCL_HEADER_DIR "${POCL_INSTALL_PUBLIC_HEADER_DIR}/CL" CACHE PATH "POCL header dir for OpenCL headers")
-  endif()
-
 else()
-  # No installing for windows... 
+  if (WIN32)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+    message(STATUS "Setting destination on windows to: ${CMAKE_INSTALL_PREFIX}")
+  endif()
 endif()
 
+# for libpocl.so
+set(POCL_INSTALL_PUBLIC_LIBDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH "POCL public libdir")
+
+# for llvmopencl.so
+set(POCL_INSTALL_PRIVATE_LIBDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pocl" CACHE PATH "POCL private libdir")
+
+# for pocl.icd
+if (WIN32)
+  set(POCL_INSTALL_ICD_VENDORDIR 
+    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH "POCL ICD file destination")
+else()
+  set(POCL_INSTALL_ICD_VENDORDIR 
+    "/etc/OpenCL/vendors" CACHE PATH "POCL ICD file destination")
+endif()
+
+# for kernel-<target>.bc
+set(POCL_INSTALL_PRIVATE_DATADIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/pocl" CACHE PATH "POCL private datadir")
+
+# for poclu.h
+set(POCL_INSTALL_PUBLIC_HEADER_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}" CACHE PATH "POCL public header dir")
+
+# for _kernel.h et al
+set(POCL_INSTALL_PRIVATE_HEADER_DIR "${POCL_INSTALL_PRIVATE_DATADIR}/include" CACHE PATH "POCL private header dir")
+
+# for pocl-standalone et al
+set(POCL_INSTALL_PUBLIC_BINDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}" CACHE PATH "POCL public bindir")
+
+# for PoclConfig.cmake & stuff
+set(POCL_INSTALL_CMAKE_CONFIG_DIR "${POCL_INSTALL_PRIVATE_LIBDIR}" CACHE PATH   "Installation directory for CMake files")
+
+# TODO maybe use output of pkg-config --variable=pc_path pkg-config ?
+set(POCL_INSTALL_PKGCONFIG_DIR "${POCL_INSTALL_PUBLIC_LIBDIR}/pkgconfig" CACHE PATH "Destination for pocl.pc")
+
+if(APPLE)
+  set(POCL_INSTALL_OPENCL_HEADER_DIR "${POCL_INSTALL_PUBLIC_HEADER_DIR}/OpenCL" CACHE PATH "POCL header dir for OpenCL headers")
+else()
+  set(POCL_INSTALL_OPENCL_HEADER_DIR "${POCL_INSTALL_PUBLIC_HEADER_DIR}/CL" CACHE PATH "POCL header dir for OpenCL headers")
+endif()
 
 option(BUILD_SHARED_LIBS "ON=Build shared libs, OFF=static libs" ON)
 
@@ -781,12 +786,18 @@ file(WRITE "${CMAKE_BINARY_DIR}/install-paths.h" "#define PKGDATADIR \"${POCL_IN
 ##########################################################
 
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/pocl.icd" CONTENT "${POCL_INSTALL_PUBLIC_LIBDIR}/$<TARGET_FILE_NAME:pocl>" CONDITION 1)
+
 install(FILES "${CMAKE_BINARY_DIR}/pocl.icd"
          DESTINATION "${POCL_INSTALL_ICD_VENDORDIR}")
 
-# write icd file for pocl testing
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/ocl-vendors")
-file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/ocl-vendors/pocl-tests.icd" CONTENT "$<TARGET_FILE:pocl>" CONDITION 1)
+if (WIN32)
+  message(STATUS "TODO: Tests are still not supported in Windows.")
+else()
+
+  # write icd file for pocl testing
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/ocl-vendors")
+  file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/ocl-vendors/pocl-tests.icd" CONTENT "$<TARGET_FILE:pocl>" CONDITION 1)
+endif()
 
 ##########################################################
 
@@ -888,7 +899,7 @@ MESSAGE(STATUS " ")
 
 MESSAGE(STATUS "LLVM_CONFIG: ${LLVM_CONFIG}")
 MESSAGE(STATUS "LLVM_OPT: ${LLVM_OPT}")
-MESSAGE(STATUS "LLC: ${LLC}")
+MESSAGE(STATUS "LLVM_LLC: ${LLVM_LLC}")
 MESSAGE(STATUS "LLVM_AS: ${LLVM_AS}")
 MESSAGE(STATUS "LLVM_LINK: ${LLVM_LINK}")
 MESSAGE(STATUS "LLVM_LLI: ${LLVM_LLI}")

@@ -159,7 +159,8 @@ find_program_or_die(LLVM_LLI "lli" "LLVM interpreter")
 # try compile with any compiler (supplied as argument)
 macro(custom_try_compile_any COMPILER SUFFIX SOURCE RES_VAR)
   string(RANDOM RNDNAME)
-  set(RANDOM_FILENAME "${CMAKE_BINARY_DIR}/compile_test_${RNDNAME}.${SUFFIX}")
+  set(RANDOM_FILENAME 
+    "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/compile_test_${RNDNAME}.${SUFFIX}")
   file(WRITE "${RANDOM_FILENAME}" "${SOURCE}")
 
   execute_process(COMMAND "${COMPILER}" ${ARGN} "${RANDOM_FILENAME}" RESULT_VARIABLE ${RES_VAR} OUTPUT_VARIABLE OV ERROR_VARIABLE EV)
@@ -174,7 +175,7 @@ macro(custom_try_compile_any COMPILER SUFFIX SOURCE RES_VAR)
       message(STATUS "STDERR: ${EV}")
     endif()
   endif()
-  #file(REMOVE "${RANDOM_FILENAME}")
+  file(REMOVE "${RANDOM_FILENAME}")
 
 endmacro()
 
@@ -225,7 +226,7 @@ macro(custom_try_run_exe SOURCE1 SOURCE2 OUTPUT_VAR)
 endmacro()
 
 # clang try-compile-run macro, run via lli, the llvm interpreter
-macro(custom_try_run_lli SOURCE1 SOURCE2 OUTPUT_VAR)
+macro(custom_try_run_lli SOURCE1 SOURCE2 OUTPUT_VAR RES_VAR)
 # this uses "lli" - the interpreter, so we can run any -target
 # TODO variable for target !!
   set(OUTF "${CMAKE_BINARY_DIR}/try_run.bc")
@@ -234,21 +235,16 @@ macro(custom_try_run_lli SOURCE1 SOURCE2 OUTPUT_VAR)
   endif()
   custom_try_compile_c_cxx("${CLANG}" "c" "${SOURCE1}" "${SOURCE2}" RESV "-o" "${OUTF}" "-x" "c" "-emit-llvm" "-c" ${ARGN})
   set(${OUTPUT_VAR} "")
+  set(${RES_VAR} "")
   if(RESV OR (NOT EXISTS "${OUTF}"))
     message(STATUS " ########## Compilation failed")
   else()
-    execute_process(COMMAND "${LLVM_LLI}" "${OUTF}" RESULT_VARIABLE RESV OUTPUT_VARIABLE ${OUTPUT_VAR} ERROR_VARIABLE EV)
+    execute_process(COMMAND "${LLVM_LLI}" "${OUTF}" 
+      RESULT_VARIABLE RESV 
+      OUTPUT_VARIABLE ${OUTPUT_VAR} 
+      ERROR_VARIABLE EV)
+    set(${RES_VAR} ${RESV})
     file(REMOVE "${OUTF}")
-    if(${RESV})
-      message(STATUS " ########## The command ${OUTF}")
-      message(STATUS " ########## Exited with nonzero status: ${RESV}")
-      if(${${OUTPUT_VAR}})
-        message(STATUS " ########## STDOUT: ${${OUTPUT_VAR}}")
-      endif()
-      if(EV)
-        message(STATUS " ########## STDERR: ${EV}")
-      endif()
-    endif()
   endif()
 endmacro()
 
@@ -304,7 +300,8 @@ macro(CHECK_SIZEOF TYPE RES_VAR TRIPLE)
   setup_cache_var_name(SIZEOF "${TYPE}-${TRIPLE}-${CLANG}")
 
   if(NOT DEFINED ${CACHE_VAR_NAME})
-    custom_try_run_lli("#include <stddef.h>\n #include <stdio.h>" "printf(\"%i\",(int)sizeof(${TYPE})); return 0;" ${RES_VAR} "${CLANG_TARGET_OPTION}${TRIPLE}")
+    custom_try_run_lli("" "return sizeof(${TYPE});" SIZEOF_OUT ${RES_VAR} "${CLANG_TARGET_OPTION}${TRIPLE}")
+
     if(NOT ${RES_VAR})
       message(SEND_ERROR "Could not determine sizeof(${TYPE})")
     endif()
@@ -319,17 +316,13 @@ macro(CHECK_ALIGNOF TYPE TYPEDEF RES_VAR TRIPLE)
   if(NOT DEFINED ${CACHE_VAR_NAME})
 
     custom_try_run_lli("
-#include <stddef.h>
-#include <stdio.h>
-
 #ifndef offsetof
 #define offsetof(type, member) ((char *) &((type *) 0)->member - (char *) 0)
 #endif
 
 ${TYPEDEF}"  "typedef struct { char x; ${TYPE} y; } ac__type_alignof_;
     int r = offsetof(ac__type_alignof_, y);
-    printf(\"%i\",r);
-    return 0;" ${RES_VAR} "${CLANG_TARGET_OPTION}${TRIPLE}")
+    return r;" SIZEOF_OUT ${RES_VAR} "${CLANG_TARGET_OPTION}${TRIPLE}")
 
     if(NOT ${RES_VAR})
       message(SEND_ERROR "Could not determine align of(${TYPE})")
