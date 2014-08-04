@@ -544,7 +544,12 @@ set(OCL_KERNEL_TARGET_CPU "${LLC_HOST_CPU}") #The kernel target CPU variant.
 
 # Determine which device drivers to build.
 
-set(OCL_DRIVERS "basic pthreads")
+if(WIN32)
+  message(STATUS "For now Windows support only basic driver.")
+  set(OCL_DRIVERS "basic")
+else()
+  set(OCL_DRIVERS "basic pthreads")
+endif()
 
 if(NOT DEFINED DEFAULT_ENABLE_TCE)
 

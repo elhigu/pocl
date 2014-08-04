@@ -22,7 +22,12 @@
    THE SOFTWARE.
 */
 
-#include <unistd.h>
+#ifdef _MSC_VER
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
+
 #include <string.h>
 #include <ctype.h>
 

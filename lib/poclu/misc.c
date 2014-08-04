@@ -35,8 +35,9 @@ poclu_create_any_context()
   cl_platform_id* platforms = (cl_platform_id*)malloc(sizeof(cl_platform_id));
 
   clGetPlatformIDs(1, platforms, &i);
-  if (i == 0)
-    return (cl_context)0;
+  if (i == 0) {
+	  return (cl_context)0;
+  }
 
   cl_context_properties properties[] = 
     {CL_CONTEXT_PLATFORM, 
