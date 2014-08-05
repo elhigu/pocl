@@ -28,7 +28,13 @@
 #include "config.h"
 #include <assert.h>
 #include <stdio.h>
+
+#ifdef _MSC_VER
+// TODO: ADD PORTABLE MACROS
+typedef struct { int a;  } lt_dlhandle;
+#else
 #include <ltdl.h>
+#endif
 #include <pthread.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
@@ -160,20 +166,40 @@ typedef pthread_mutex_t pocl_lock_t;
 #  define POsymAlways(name)
 
 #else
-/* Symbol aliases are supported */
 
-#  define POname(name) PO##name
+#ifdef _MSC_VER
+
+// should be something like ... in VC++, but 
+// I really didn't understand what that  
+// __typeof__(name) PO##name __attribute__((visibility("hidden")));
+// does.... creates new symbol pointing to same function with different name
+// or what?!
+
+// for now just don't declare these... (probably ICD stuff does not work)
+#  define POdeclsym(name) ;
+#  define POCL_ALIAS_OPENCL_SYMBOL(name) ;
+#  define POsymAlways(name) ;
+#else
 #  define POdeclsym(name)			\
   __typeof__(name) PO##name __attribute__((visibility("hidden")));
 #  define POCL_ALIAS_OPENCL_SYMBOL(name)                                \
   __typeof__(name) name __attribute__((alias ("PO" #name), visibility("default")));
 #  define POsymAlways(name) POCL_ALIAS_OPENCL_SYMBOL(name)
+#endif
+
+/* Symbol aliases are supported */
+
+#  define POname(name) PO##name
 #  ifdef DIRECT_LINKAGE
 #    define POsym(name) POCL_ALIAS_OPENCL_SYMBOL(name)
 #  else
 #    define POsym(name)
 #  endif
 
+#endif
+
+#ifdef _MSC_VER
+# define __restrict__ 
 #endif
 
 /* The ICD compatibility part. This must be first in the objects where

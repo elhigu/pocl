@@ -81,6 +81,17 @@ endif()
 
 ######################################################################################
 
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+find_package( Pthreads )
+
+if(NOT Pthreads_FOUND)
+  message(FATAL_ERROR "pthreads is required!")
+endif()
+  
+include_directories("${Pthreads_INCLUDE_DIRS}")
+
+######################################################################################
+
 include(LLVM RESULT_VARIABLE RES)
 if(NOT RES)
   message(FATAL_ERROR "Could not load LLVM.cmake")
@@ -544,12 +555,7 @@ set(OCL_KERNEL_TARGET_CPU "${LLC_HOST_CPU}") #The kernel target CPU variant.
 
 # Determine which device drivers to build.
 
-if(WIN32)
-  message(STATUS "For now Windows support only basic driver.")
-  set(OCL_DRIVERS "basic")
-else()
-  set(OCL_DRIVERS "basic pthreads")
-endif()
+set(OCL_DRIVERS "basic pthreads")
 
 if(NOT DEFINED DEFAULT_ENABLE_TCE)
 
