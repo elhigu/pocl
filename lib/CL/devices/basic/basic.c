@@ -32,7 +32,12 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
+#ifdef _MSC_VER
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
+
 #include <dev_image.h>
 #include <sys/time.h>
 
