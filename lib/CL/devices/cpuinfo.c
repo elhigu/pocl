@@ -24,7 +24,11 @@
 
 #include <pocl_cl.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "config.h"
 #include "cpuinfo.h"

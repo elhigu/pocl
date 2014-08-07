@@ -138,7 +138,7 @@ pocl_get_device_type_count(cl_device_type device_type)
 }
 
 
-static inline void
+static __inline void
 pocl_device_common_init(struct _cl_device_id* dev)
 {
   POCL_INIT_OBJECT(dev);
@@ -151,7 +151,7 @@ pocl_device_common_init(struct _cl_device_id* dev)
     dev->long_name = dev->short_name;
 }
 
-static inline void
+static __inline void
 str_toupper(char *out, const char *in)
 {
   int i;

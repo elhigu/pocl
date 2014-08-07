@@ -34,12 +34,13 @@
 #include <stdlib.h>
 #ifdef _MSC_VER
 	#include <io.h>
+	#include <time.h>
 #else
 	#include <unistd.h>
+#include <sys/time.h>
 #endif
 
 #include <dev_image.h>
-#include <sys/time.h>
 
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 

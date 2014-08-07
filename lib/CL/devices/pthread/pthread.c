@@ -28,7 +28,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#ifdef _MSC_VER
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include "pocl_runtime_config.h"
 #include "utlist.h"
 #include "cpuinfo.h"

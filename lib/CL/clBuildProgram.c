@@ -25,7 +25,11 @@
 #include "pocl_cl.h"
 #include <assert.h>
 #include <string.h>
-#include <unistd.h>
+#ifdef _MSC_VER
+	#include <io.h>
+#else
+	#include <unistd.h>
+#endif
 #include <sys/stat.h>
 #include "pocl_llvm.h"
 
