@@ -24,13 +24,13 @@
 #define POCL_BARRIER_TAIL_REPLICATION
 
 #include "config.h"
-#if (defined LLVM_3_1 or defined LLVM_3_2)
+#if defined(LLVM_3_1) or defined(LLVM_3_2)
 #include "llvm/Function.h"
 #else
 #include "llvm/IR/Function.h"
 #endif
 
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
 #include "llvm/Analysis/Dominators.h"
 #else
 #include "llvm/IR/Dominators.h"

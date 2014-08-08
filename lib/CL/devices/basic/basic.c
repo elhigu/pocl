@@ -32,12 +32,13 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <llvm/Support/TimeValue.h>
+
 #ifdef _MSC_VER
 	#include <io.h>
-	#include <time.h>
 #else
 	#include <unistd.h>
-#include <sys/time.h>
 #endif
 
 #include <dev_image.h>

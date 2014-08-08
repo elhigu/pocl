@@ -62,7 +62,7 @@ option(BUILD_SHARED_LIBS "ON=Build shared libs, OFF=static libs" ON)
 # required b/c SHARED libs defaults to ON while OBJECT defaults to OFF
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-######################################################################################
+
 # AC_CONFIG_TESTDIR([tests])
 if(UNIX)
   enable_testing()
@@ -78,6 +78,8 @@ find_package( Hwloc )
 if(NOT Hwloc_FOUND)
   message(FATAL_ERROR "hwloc package is required!")
 endif()
+
+include_directories("${Hwloc_INCLUDE_DIRS}")
 
 ######################################################################################
 
@@ -100,6 +102,8 @@ endif()
 if("${LLVM_VERSION}" VERSION_LESS "3.2")
   message(FATAL_ERROR "POCL requires LLVM version >= 3.2 !")
 endif()
+
+include_directories("${LLVM_INCLUDEDIR}")
 
 ######################################################################################
 
