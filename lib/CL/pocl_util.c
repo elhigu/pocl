@@ -25,8 +25,11 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <io.h>
+#else
 #include <unistd.h>
-
+#endif
 #include "pocl_util.h"
 #include "pocl_cl.h"
 #include "utlist.h"

@@ -25,13 +25,13 @@
 #define _POCL_WORKITEM_HANDLER_H
 
 #include "config.h"
-#if (defined LLVM_3_1 or defined LLVM_3_2)
+#if defined(LLVM_3_1) or defined(LLVM_3_2)
 #include "llvm/Function.h"
 #else
 #include "llvm/IR/Function.h"
 #endif
 
-#if not (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if not defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
 #include "llvm/IR/Dominators.h"
 #endif
 

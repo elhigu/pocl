@@ -59,7 +59,7 @@ char LoopBarriers::ID = 0;
 void
 LoopBarriers::getAnalysisUsage(AnalysisUsage &AU) const
 {
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
   AU.addRequired<DominatorTree>();
   AU.addPreserved<DominatorTree>();
 #else
@@ -75,7 +75,7 @@ LoopBarriers::runOnLoop(Loop *L, LPPassManager &LPM)
   if (!Workgroup::isKernelToProcess(*L->getHeader()->getParent()))
     return false;
 
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4))
   DT = &getAnalysis<DominatorTree>();
 #else
   DT = &getAnalysis<DominatorTreeWrapperPass>().getDomTree();
@@ -83,7 +83,7 @@ LoopBarriers::runOnLoop(Loop *L, LPPassManager &LPM)
 
   bool changed = ProcessLoop(L, LPM);
 
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4))
   DT->verifyAnalysis();
 #else
   DT->verifyDomTree();

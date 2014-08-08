@@ -35,7 +35,7 @@
 #include "llvm/IR/DataLayout.h"
 #endif
 
-#if (defined LLVM_3_1 or defined LLVM_3_2)
+#if defined(LLVM_3_1) or defined(LLVM_3_2)
 #include "llvm/Argument.h"
 #include "llvm/Constants.h"
 #include "llvm/DerivedTypes.h"
