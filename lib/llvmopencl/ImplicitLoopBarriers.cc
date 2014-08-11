@@ -57,7 +57,7 @@ namespace {
 char ImplicitLoopBarriers::ID = 0;
 
 void ImplicitLoopBarriers::getAnalysisUsage(AnalysisUsage &AU) const {
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
   AU.addRequired<DominatorTree>();
   AU.addPreserved<DominatorTree>();
 #else

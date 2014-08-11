@@ -33,7 +33,7 @@
 #include "llvm/IR/LLVMContext.h"
 #endif
 #include "llvm/ADT/Statistic.h"
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
 #include "llvm/Support/InstIterator.h"
 #else
 #include "llvm/IR/InstIterator.h"

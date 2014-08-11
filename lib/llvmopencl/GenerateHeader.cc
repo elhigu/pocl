@@ -273,7 +273,7 @@ GenerateHeader::ProcessAutomaticLocals(Function *F,
                                        raw_fd_ostream &out)
 {
   Module *M = F->getParent();
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
   DataLayout &TDr = getAnalysis<DataLayout>();
   DataLayout *TD=&TDr;
 #else
