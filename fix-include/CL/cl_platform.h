@@ -21,6 +21,9 @@
    THE SOFTWARE.
 */
 
+// how to fix this without #include_next?
+#ifndef _MSC_VER
+
 #include_next <CL/cl_platform.h>
 
 // We do not want warnings when using 1.0 and 1.1 deprecated functions:
@@ -42,3 +45,4 @@
 #define AVAILABLE_MAC_OS_X_VERSION_10_7_AND_LATER
 #undef  AVAILABLE_MAC_OS_X_VERSION_10_8_AND_LATER
 #define AVAILABLE_MAC_OS_X_VERSION_10_8_AND_LATER
+#endif
