@@ -30,7 +30,7 @@
 #include "llvm/IR/Function.h"
 #endif
 
-#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
+#if defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4)
 #include "llvm/Analysis/Dominators.h"
 #else
 #include "llvm/IR/Dominators.h"

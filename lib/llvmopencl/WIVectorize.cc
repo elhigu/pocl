@@ -77,7 +77,7 @@
 #include "llvm/Analysis/TargetTransformInfo.h"
 #endif
 
-#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
+#if defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4)
 #include "llvm/Support/ValueHandle.h"
 #else
 #include "llvm/IR/ValueHandle.h"
@@ -107,7 +107,7 @@ using namespace llvm;
 // Prior to 3.5, C++11 was not desired in LLVM, so they used
 // work-arounds. Comply with this here too, just in case someone
 // has an old compiler
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4))
 #define NEXT llvm::next
 #define PRIOR llvm::prior
 #else

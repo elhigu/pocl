@@ -31,13 +31,13 @@
 #include "llvm/Transforms/Utils/Cloning.h"
 #ifdef LLVM_3_1
 #include "llvm/Target/TargetData.h"
-#elif defined LLVM_3_2
+#elif defined(LLVM_3_2)
 #include "llvm/DataLayout.h"
 #else
 #include "llvm/IR/DataLayout.h"
 #endif
 
-#if defined(LLVM_3_1) or defined(LLVM_3_2)
+#if defined(LLVM_3_1) || defined(LLVM_3_2)
 #include "llvm/Argument.h"
 #include "llvm/Constants.h"
 #include "llvm/DerivedTypes.h"
@@ -94,7 +94,7 @@ static RegisterPass<GenerateHeader> X("generate-header",
 void
 GenerateHeader::getAnalysisUsage(AnalysisUsage &AU) const
 {
-#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
+#if defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4)
   AU.addRequired<DataLayout>();
 #else
   AU.addRequired<DataLayoutPass>();
@@ -273,7 +273,7 @@ GenerateHeader::ProcessAutomaticLocals(Function *F,
                                        raw_fd_ostream &out)
 {
   Module *M = F->getParent();
-#if defined(LLVM_3_2) or defined(LLVM_3_3) or defined(LLVM_3_4)
+#if defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4)
   DataLayout &TDr = getAnalysis<DataLayout>();
   DataLayout *TD=&TDr;
 #else

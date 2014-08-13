@@ -33,7 +33,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <llvm/Support/TimeValue.h>
+#include "llvm/Support/TimeValue.h"
 
 #ifdef _MSC_VER
 	#include <io.h>
