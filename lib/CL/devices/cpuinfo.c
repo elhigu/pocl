@@ -26,6 +26,9 @@
 #include <string.h>
 #ifdef _MSC_VER
 #include <io.h>
+#define R_OK    4       /* Test for read permission.  */
+#define W_OK    2       /* Test for write permission.  */
+#define F_OK    0       /* Test for existence.  */
 #else
 #include <unistd.h>
 #endif
@@ -60,11 +63,15 @@ const char* cpufreq_file="/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"
  */
 int pocl_cpufreq_get_max()
 {
-  int retval=-1;
+  // VC++ require that FILE handle is declared in start of function or you 
+  // will get illegal use on this type as an expression...
+  FILE *f;
+  
+  int retval = -1;
   if (access (cpufreq_file, R_OK) != 0)
     return -1;
 
-  FILE *f = fopen (cpufreq_file, "r");
+  f = fopen(cpufreq_file, "r");
   int nread = fscanf(f, "%d", &retval);
   fclose(f);
   if (nread < 1)
@@ -217,6 +224,10 @@ pocl_cpuinfo_detect_compute_unit_count() {
 void
 pocl_cpuinfo_append_cpu_name(cl_device_id device)
 {
+  // VC++ require that FILE handle is declared in start of function or you 
+  // will get illegal use on this type as an expression...
+  FILE *f;
+	
   /* If something fails here, have this as backup solution.
    * short_name is in the .data anyways.*/
   device->long_name = device->short_name;
@@ -224,7 +235,8 @@ pocl_cpuinfo_append_cpu_name(cl_device_id device)
   /* read contents of /proc/cpuinfo */
   if (access (cpuinfo, R_OK) != 0) 
     return;
-  FILE *f = fopen (cpuinfo, "r");
+
+  f = fopen(cpuinfo, "r");
   char contents[MAX_CPUINFO_SIZE];
   int num_read = fread (contents, 1, MAX_CPUINFO_SIZE - 1, f);            
   contents[num_read]='\0';

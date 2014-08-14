@@ -21,7 +21,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 */
-
 #include "basic.h"
 #include "cpuinfo.h"
 #include "topology/pocl_topology.h"
