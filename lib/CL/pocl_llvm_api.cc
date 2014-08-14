@@ -33,7 +33,7 @@
 #include "llvm/PassManager.h"
 #include "llvm/Bitcode/ReaderWriter.h"
 #include "llvm/Transforms/Utils/Cloning.h"
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
 #include "llvm/Linker.h"
 #else
 #include "llvm/Linker/Linker.h"
@@ -562,7 +562,7 @@ int pocl_llvm_get_kernel_metadata(cl_program program,
   }
 
   DataLayout *TD = 0;
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
   const std::string &ModuleDataLayout = input->getDataLayout();
 #else
   const std::string &ModuleDataLayout = input->getDataLayout()->getStringRepresentation();
@@ -866,7 +866,7 @@ static PassManager& kernel_compiler_passes
 #endif
 
   if (module_data_layout != "")
-    #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+	#if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
     Passes->add(new DataLayout(module_data_layout));
     #else
     Passes->add(new DataLayoutPass(DataLayout(module_data_layout)));
@@ -1197,7 +1197,7 @@ int pocl_llvm_generate_workgroup_function(cl_device_id device,
   pocl::LocalSize.addValue(local_z);
   KernelName = kernel->name;
 
-  #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+  #if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
   kernel_compiler_passes(device, linked_bc->getDataLayout()).run(*linked_bc);
   #else
   kernel_compiler_passes(device,
@@ -1298,7 +1298,7 @@ pocl_llvm_codegen( cl_kernel kernel,
 {
     std::string error;
     SMDiagnostic Err;
-#if defined LLVM_3_2 or defined LLVM_3_3
+#if defined LLVM_3_2 || defined LLVM_3_3
     tool_output_file outfile(outfilename, error, 0);
 #else
     tool_output_file outfile(outfilename, error, F_Binary);

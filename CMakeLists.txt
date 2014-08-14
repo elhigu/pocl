@@ -103,7 +103,12 @@ if("${LLVM_VERSION}" VERSION_LESS "3.2")
   message(FATAL_ERROR "POCL requires LLVM version >= 3.2 !")
 endif()
 
+# with uninstalled llvm this points to llvm source directory's includes...
+# which does not contain e.g. Support/DataTypes.h
 include_directories("${LLVM_INCLUDEDIR}")
+
+# compiled includes...
+include_directories("${LLVM_OBJ_ROOT}/include")
 
 ######################################################################################
 
@@ -946,6 +951,7 @@ MESSAGE(STATUS "LLVM_CPPFLAGS: ${LLVM_CPPFLAGS}")
 MESSAGE(STATUS "LLVM_LDFLAGS: ${LLVM_LDFLAGS}")
 MESSAGE(STATUS "LLVM_LIBDIR: ${LLVM_LIBDIR}")
 MESSAGE(STATUS "LLVM_INCLUDEDIR: ${LLVM_INCLUDEDIR}")
+MESSAGE(STATUS "LLVM_OBJ_ROOT: ${LLVM_OBJ_ROOT}")
 # these are a bit too long..
 #MESSAGE(STATUS "LLVM_LIBS: ${LLVM_LIBS}")
 #MESSAGE(STATUS "LLVM_LIBFILES: ${LLVM_LIBFILES}")

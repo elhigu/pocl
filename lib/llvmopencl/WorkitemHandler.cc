@@ -93,7 +93,7 @@ WorkitemHandler::Initialize(Kernel *K) {
   }
 
   llvm::Type *localIdType; 
-  #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+  #if (defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4))
   if (M->getPointerSize() == llvm::Module::Pointer64)
     size_t_width = 64;
   else if (M->getPointerSize() == llvm::Module::Pointer32)
@@ -117,7 +117,7 @@ WorkitemHandler::Initialize(Kernel *K) {
 }
 
 
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4))
 bool
 WorkitemHandler::dominatesUse
 (llvm::DominatorTree *DT, Instruction &I, unsigned i) {
@@ -183,7 +183,7 @@ WorkitemHandler::dominatesUse
    the old one. This should ensure the reachability without 
    the costly dominance analysis.
 */
-#if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+#if (defined(LLVM_3_2) || defined(LLVM_3_3) || defined(LLVM_3_4))
 bool
 WorkitemHandler::fixUndominatedVariableUses(llvm::DominatorTree *DT, 
                                             llvm::Function &F) 

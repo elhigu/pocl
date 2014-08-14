@@ -219,11 +219,11 @@ namespace {
     ScalarEvolution *SE;
 #ifdef LLVM_3_1
     TargetData *TD;
-#elif defined LLVM_3_2
+#elif defined(LLVM_3_2)
     DataLayout *TD;
     TargetTransformInfo *TTI;
     const VectorTargetTransformInfo *VTTI;    
-#elif (defined LLVM_3_3 or defined LLVM_3_4)
+#elif (defined(LLVM_3_3) || defined(LLVM_3_4))
     DataLayout *TD;
     TargetTransformInfo *TTI;
     const TargetTransformInfo *VTTI;
@@ -401,7 +401,7 @@ namespace {
       TTI = IgnoreTargetInfo ? 0 :
         getAnalysisIfAvailable<TargetTransformInfo>();
       VTTI = TTI ? TTI->getVectorTargetTransformInfo() : 0;        
-#elif (defined LLVM_3_3 or defined LLVM_3_4)
+#elif (defined LLVM_3_3 || defined LLVM_3_4)
       TD = getAnalysisIfAvailable<DataLayout>();
       TTI = IgnoreTargetInfo ? 0 :
         getAnalysisIfAvailable<TargetTransformInfo>();
@@ -894,7 +894,7 @@ namespace {
             // We have to extract it from same position of the vector phi node.
             Instruction::use_iterator useiter = orig->use_begin();            
             while (useiter != orig->use_end()) {
-                #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+                #if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
                 llvm::User* tmp = *useiter;
                 #else
                 llvm::User* tmp = (*useiter).getUser();
@@ -927,7 +927,7 @@ namespace {
                 // We have to extract it from same position of the vector phi node.                
                 Instruction::use_iterator ui = tmp->use_begin();                
                 while (ui != tmp->use_end()) {
-                    #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+                    #if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
                     llvm::User* user = *ui;
                     #else
                     llvm::User* user = (*ui).getUser();
@@ -1597,7 +1597,7 @@ namespace {
                                 }
                             }
                             if (!usedInVec) {
-                                #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+								#if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
                                 usesToReplace.push_back(*it);
                                 #else
                                 usesToReplace.push_back((*it).getUser());
@@ -3012,7 +3012,7 @@ namespace {
     Instruction::use_iterator useiter = oldAlloca.use_begin();                
 
     while (useiter != oldAlloca.use_end()) {
-        #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+		#if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
         llvm::User* user = *useiter;
         #else
         llvm::User* user = (*useiter).getUser();
@@ -3022,7 +3022,7 @@ namespace {
             BitCastInst* bitCast = cast<BitCastInst>(user);
             Instruction::use_iterator useIterBC = bitCast->use_begin();
             while (useIterBC != bitCast->use_end()) {
-                #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+                #if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
                 llvm::User* bcUser = *useIterBC;
                 #else
                 llvm::User* bcUser = (*useIterBC).getUser();
@@ -3055,7 +3055,7 @@ namespace {
     Instruction::use_iterator useiter = oldAlloca.use_begin();                
 
     while (useiter != oldAlloca.use_end()) {
-        #if (defined LLVM_3_2 or defined LLVM_3_3 or defined LLVM_3_4)
+		#if (defined LLVM_3_2 || defined LLVM_3_3 || defined LLVM_3_4)
         llvm::User* tmp = *useiter;
         #else
         llvm::User* tmp = (*useiter).getUser();
