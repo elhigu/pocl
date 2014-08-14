@@ -32,12 +32,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "llvm/Support/TimeValue.h"
-
 #ifdef _MSC_VER
-	#include <io.h>
+    #include <io.h>
+    #include <Windows.h>
 #else
-	#include <unistd.h>
+    #include <unistd.h>
+    #include <sys/time.h>
 #endif
 
 #include <dev_image.h>
@@ -457,7 +457,11 @@ pocl_basic_run
         }
     }
 
+#ifndef _MSC_VER
   void *arguments[kernel->num_args + kernel->num_locals];
+#else
+  void **arguments = malloc(sizeof(void*) * (kernel->num_args + kernel->num_locals));
+#endif
 
   /* Process the kernel arguments. Convert the opaque buffer
      pointers to real device pointers, allocate dynamic local 
@@ -541,6 +545,10 @@ pocl_basic_run
        i < kernel->num_args + kernel->num_locals;
        ++i)
     pocl_basic_free(data, 0, *(void **)(arguments[i]));
+
+#ifdef _MSC_VER
+  free(arguments);
+#endif
 }
 
 void
@@ -685,7 +693,7 @@ pocl_basic_map_mem (void *data, void *buf_ptr,
   /* All global pointers of the pthread/CPU device are in 
      the host address space already, and up to date. */
   if (host_ptr != NULL) return host_ptr;
-  return buf_ptr + offset;
+  return (char*)buf_ptr + offset;
 }
 
 void
@@ -699,9 +707,21 @@ pocl_basic_uninit (cl_device_id device)
 cl_ulong
 pocl_basic_get_timer_value (void *data) 
 {
+#ifndef _MSC_VER
   struct timeval current;
   gettimeofday(&current, NULL);  
   return (current.tv_sec * 1000000 + current.tv_usec)*1000;
+#else
+  FILETIME ft;
+  cl_ulong tmpres = 0;
+  GetSystemTimeAsFileTime(&ft);
+  tmpres |= ft.dwHighDateTime;
+  tmpres <<= 32;
+  tmpres |= ft.dwLowDateTime;
+  tmpres -= 11644473600000000Ui64;
+  tmpres /= 10;
+  return tmpres;
+#endif
 }
 
 cl_int 
