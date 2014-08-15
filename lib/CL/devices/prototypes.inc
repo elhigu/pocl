@@ -23,9 +23,11 @@
 #ifdef _MSC_VER
 #define PUSH_VISIBILITY_HIDDEN
 #define POP_VISIBILITY_HIDDEN
+#define RESTRICT __restrict
 #else
 #define PUSH_VISIBILITY_HIDDEN _Pragma ("GCC visibility push(hidden)")
 #define POP_VISIBILITY_HIDDEN _Pragma ("GCC visibility pop")
+#define RESTRICT __restrict__
 #endif
 
 #define GEN_PROTOTYPES(__DRV__)                                         \
@@ -61,7 +63,7 @@
                                 size_t host_row_pitch,                  \
                                 size_t host_slice_pitch);               \
   void pocl_##__DRV__##_copy (void *data, const void *src_ptr,              \
-                          void *__restrict__ dst_ptr, size_t cb);       \
+                          void *RESTRICT dst_ptr, size_t cb);       \
   void pocl_##__DRV__##_copy_rect (void *data, const void *src_ptr,         \
                                void *dst_ptr,                           \
                                const size_t *src_origin,                \
@@ -72,9 +74,9 @@
                                size_t dst_row_pitch,                    \
                                size_t dst_slice_pitch);                 \
   void pocl_##__DRV__##_fill_rect (void *data,           \
-                           void *__restrict__ const device_ptr, \
-                           const size_t *__restrict__ const buffer_origin,  \
-                           const size_t *__restrict__ const region,         \
+                           void *RESTRICT const device_ptr, \
+                           const size_t *RESTRICT const buffer_origin,  \
+                           const size_t *RESTRICT const region,         \
                            size_t const buffer_row_pitch,      \
                            size_t const buffer_slice_pitch,    \
                            void *fill_pixel,    \

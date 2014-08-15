@@ -30,8 +30,10 @@
 #include <errno.h>
 #ifdef _MSC_VER
 #include <io.h>
+#define RESTRICT __restrict
 #else
 #include <unistd.h>
+#define RESTRICT __restrict__
 #endif
 #include "pocl_runtime_config.h"
 #include "utlist.h"
@@ -485,7 +487,7 @@ pocl_pthread_write (void *data, const void *host_ptr, void *device_ptr, size_t c
 
 
 void
-pocl_pthread_copy (void *data, const void *src_ptr, void *__restrict__ dst_ptr, size_t cb)
+pocl_pthread_copy (void *data, const void *src_ptr, void *RESTRICT dst_ptr, size_t cb)
 {
   if (src_ptr == dst_ptr)
     return;
@@ -496,10 +498,10 @@ pocl_pthread_copy (void *data, const void *src_ptr, void *__restrict__ dst_ptr, 
 void
 pocl_pthread_copy_rect (void *data,
                         const void *__restrict const src_ptr,
-                        void *__restrict__ const dst_ptr,
-                        const size_t *__restrict__ const src_origin,
-                        const size_t *__restrict__ const dst_origin, 
-                        const size_t *__restrict__ const region,
+                        void *RESTRICT const dst_ptr,
+                        const size_t *RESTRICT const src_origin,
+                        const size_t *RESTRICT const dst_origin, 
+                        const size_t *RESTRICT const region,
                         size_t const src_row_pitch,
                         size_t const src_slice_pitch,
                         size_t const dst_row_pitch,
@@ -508,7 +510,7 @@ pocl_pthread_copy_rect (void *data,
   char const *__restrict const adjusted_src_ptr = 
     (char const*)src_ptr +
     src_origin[0] + src_row_pitch * (src_origin[1] + src_slice_pitch * src_origin[2]);
-  char *__restrict__ const adjusted_dst_ptr = 
+  char *RESTRICT const adjusted_dst_ptr = 
     (char*)dst_ptr +
     dst_origin[0] + dst_row_pitch * (dst_origin[1] + dst_slice_pitch * dst_origin[2]);
   

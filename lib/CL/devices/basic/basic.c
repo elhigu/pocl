@@ -35,9 +35,11 @@
 #ifdef _MSC_VER
     #include <io.h>
     #include <Windows.h>
+    #define RESTRICT __restrict
 #else
     #include <unistd.h>
     #include <sys/time.h>
+    #define RESTRICT __restrict__
 #endif
 
 #include <dev_image.h>
@@ -560,7 +562,7 @@ pocl_basic_run_native
 }
 
 void
-pocl_basic_copy (void *data, const void *src_ptr, void *__restrict__ dst_ptr, size_t cb)
+pocl_basic_copy (void *data, const void *src_ptr, void *RESTRICT dst_ptr, size_t cb)
 {
   if (src_ptr == dst_ptr)
     return;
@@ -571,10 +573,10 @@ pocl_basic_copy (void *data, const void *src_ptr, void *__restrict__ dst_ptr, si
 void
 pocl_basic_copy_rect (void *data,
                       const void *__restrict const src_ptr,
-                      void *__restrict__ const dst_ptr,
-                      const size_t *__restrict__ const src_origin,
-                      const size_t *__restrict__ const dst_origin, 
-                      const size_t *__restrict__ const region,
+                      void *RESTRICT const dst_ptr,
+                      const size_t *RESTRICT const src_origin,
+                      const size_t *RESTRICT const dst_origin, 
+                      const size_t *RESTRICT const region,
                       size_t const src_row_pitch,
                       size_t const src_slice_pitch,
                       size_t const dst_row_pitch,
@@ -583,7 +585,7 @@ pocl_basic_copy_rect (void *data,
   char const *__restrict const adjusted_src_ptr = 
     (char const*)src_ptr +
     src_origin[0] + src_row_pitch * src_origin[1] + src_slice_pitch * src_origin[2];
-  char *__restrict__ const adjusted_dst_ptr = 
+  char *RESTRICT const adjusted_dst_ptr = 
     (char*)dst_ptr +
     dst_origin[0] + dst_row_pitch * dst_origin[1] + dst_slice_pitch * dst_origin[2];
   
@@ -600,11 +602,11 @@ pocl_basic_copy_rect (void *data,
 
 void
 pocl_basic_write_rect (void *data,
-                       const void *__restrict__ const host_ptr,
-                       void *__restrict__ const device_ptr,
-                       const size_t *__restrict__ const buffer_origin,
-                       const size_t *__restrict__ const host_origin, 
-                       const size_t *__restrict__ const region,
+                       const void *RESTRICT const host_ptr,
+                       void *RESTRICT const device_ptr,
+                       const size_t *RESTRICT const buffer_origin,
+                       const size_t *RESTRICT const host_origin, 
+                       const size_t *RESTRICT const region,
                        size_t const buffer_row_pitch,
                        size_t const buffer_slice_pitch,
                        size_t const host_row_pitch,
@@ -613,7 +615,7 @@ pocl_basic_write_rect (void *data,
   char *__restrict const adjusted_device_ptr = 
     (char*)device_ptr +
     buffer_origin[0] + buffer_row_pitch * buffer_origin[1] + buffer_slice_pitch * buffer_origin[2];
-  char const *__restrict__ const adjusted_host_ptr = 
+  char const *RESTRICT const adjusted_host_ptr = 
     (char const*)host_ptr +
     host_origin[0] + host_row_pitch * host_origin[1] + host_slice_pitch * host_origin[2];
   
@@ -630,11 +632,11 @@ pocl_basic_write_rect (void *data,
 
 void
 pocl_basic_read_rect (void *data,
-                      void *__restrict__ const host_ptr,
-                      void *__restrict__ const device_ptr,
-                      const size_t *__restrict__ const buffer_origin,
-                      const size_t *__restrict__ const host_origin, 
-                      const size_t *__restrict__ const region,
+                      void *RESTRICT const host_ptr,
+                      void *RESTRICT const device_ptr,
+                      const size_t *RESTRICT const buffer_origin,
+                      const size_t *RESTRICT const host_origin, 
+                      const size_t *RESTRICT const region,
                       size_t const buffer_row_pitch,
                       size_t const buffer_slice_pitch,
                       size_t const host_row_pitch,
@@ -643,7 +645,7 @@ pocl_basic_read_rect (void *data,
   char const *__restrict const adjusted_device_ptr = 
     (char const*)device_ptr +
     buffer_origin[0] + buffer_row_pitch * (buffer_origin[1] + buffer_slice_pitch * buffer_origin[2]);
-  char *__restrict__ const adjusted_host_ptr = 
+  char *RESTRICT const adjusted_host_ptr = 
     (char*)host_ptr +
     host_origin[0] + host_row_pitch * (host_origin[1] + host_slice_pitch * host_origin[2]);
   
@@ -662,9 +664,9 @@ pocl_basic_read_rect (void *data,
  */
 void
 pocl_basic_fill_rect (void *data,
-                      void *__restrict__ const device_ptr,
-                      const size_t *__restrict__ const buffer_origin,
-                      const size_t *__restrict__ const region,
+                      void *RESTRICT const device_ptr,
+                      const size_t *RESTRICT const buffer_origin,
+                      const size_t *RESTRICT const region,
                       size_t const buffer_row_pitch,
                       size_t const buffer_slice_pitch,
                       void *fill_pixel,
