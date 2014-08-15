@@ -31,8 +31,13 @@
 #include <sys/stat.h>
 #ifdef _MSC_VER
 #include <io.h>
+#define MKDIR(x) mkdir(x) 
+#define R_OK    4
+#define W_OK    2
+#define F_OK    0
 #else
 #include <unistd.h>
+#define MKDIR(x) mkdir(x, S_IRWXU) 
 #endif
 #include <errno.h>
 #include <string.h>
@@ -171,9 +176,8 @@ POname(clEnqueueNDRangeKernel)(cl_command_queue command_queue,
             kernel->program->temp_dir, command_queue->device->short_name, 
             kernel->name, 
             local_x, local_y, local_z);
-  mkdir (tmpdir, S_IRWXU);
+  MKDIR (tmpdir);
 
-  
   error = snprintf
     (parallel_filename, POCL_FILENAME_LENGTH,
      "%s/%s", tmpdir, POCL_PARALLEL_BC_FILENAME);

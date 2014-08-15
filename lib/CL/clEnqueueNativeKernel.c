@@ -98,7 +98,7 @@ POname(clEnqueueNativeKernel)(cl_command_queue   command_queue ,
       POname(clRetainMemObject) (mem_list[i]);
       /* args_mem_loc is a pointer relative to the original args, since we
        * recopy them, we must do some relocation */
-      off_t offset = (uintptr_t) loc - (uintptr_t) args;
+      cl_ulong offset = (uintptr_t) loc - (uintptr_t) args;
 
       arg_loc = (void *) ((uintptr_t) args_copy + (uintptr_t)offset);
 

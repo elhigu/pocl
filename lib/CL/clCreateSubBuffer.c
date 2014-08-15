@@ -125,7 +125,7 @@ POname(clCreateSubBuffer)(cl_mem                   buffer,
 
   if (mem->flags & CL_MEM_USE_HOST_PTR)
     {
-      mem->mem_host_ptr = buffer->mem_host_ptr + info->origin;
+      mem->mem_host_ptr = (char*)(buffer->mem_host_ptr) + info->origin;
     }
 
   mem->device_ptrs = 
@@ -154,7 +154,7 @@ POname(clCreateSubBuffer)(cl_mem                   buffer,
            info->origin, info->size);
       else
         mem->device_ptrs[device->dev_id].mem_ptr = 
-          buffer->device_ptrs[device->dev_id].mem_ptr + info->origin;
+          ((char*)buffer->device_ptrs[device->dev_id].mem_ptr) + info->origin;
     }
 
   POCL_RETAIN_OBJECT(mem->parent);

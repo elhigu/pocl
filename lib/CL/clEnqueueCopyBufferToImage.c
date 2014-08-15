@@ -39,7 +39,7 @@ CL_API_SUFFIX__VERSION_1_0
      image->size); 
             
   cl_int ret_code = pocl_write_image (image, command_queue->device, dst_origin,
-                                      region, 0, 0, temp+src_offset);
+                                      region, 0, 0, (char*)temp + src_offset);
     
   free (temp);
   POCL_UPDATE_EVENT_COMPLETE(event, command_queue);

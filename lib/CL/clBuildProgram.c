@@ -26,9 +26,11 @@
 #include <assert.h>
 #include <string.h>
 #ifdef _MSC_VER
-	#include <io.h>
+    #include <io.h>
+	#define MKDIR(x) mkdir(x) 
 #else
 	#include <unistd.h>
+    #define MKDIR(x) mkdir(x, S_IRWXU) 
 #endif
 #include <sys/stat.h>
 #include "pocl_llvm.h"
@@ -186,7 +188,7 @@ CL_API_SUFFIX__VERSION_1_0
   if (program->binaries == NULL)
     {
       snprintf (tmpdir, POCL_FILENAME_LENGTH, "%s/", program->temp_dir);
-      mkdir (tmpdir, S_IRWXU);
+      MKDIR (tmpdir);
 
       /* FIXME: these might have allocated already. The user might want to
          build the program with different compiler options and calls this
@@ -211,7 +213,7 @@ CL_API_SUFFIX__VERSION_1_0
           cl_device_id device = real_device_list[device_i];
           snprintf (device_tmpdir, POCL_FILENAME_LENGTH, "%s/%s", 
                     program->temp_dir, device->short_name);
-          mkdir (device_tmpdir, S_IRWXU);
+          MKDIR (device_tmpdir);
 
           snprintf 
             (binary_file_name, POCL_FILENAME_LENGTH, "%s/%s", 
@@ -274,7 +276,7 @@ CL_API_SUFFIX__VERSION_1_0
                     program->temp_dir, real_device_list[device_i]->short_name);
           MEM_ASSERT(count >= POCL_FILENAME_LENGTH, ERROR_CLEAN_PROGRAM);
 
-          error = mkdir (device_tmpdir, S_IRWXU);
+          error = MKDIR (device_tmpdir);
           MEM_ASSERT(error, ERROR_CLEAN_PROGRAM);
 
           count = snprintf 
