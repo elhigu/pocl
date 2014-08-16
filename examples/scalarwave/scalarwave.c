@@ -36,15 +36,15 @@ exec_scalarwave_kernel(char      const *const program_source,
   static cl_kernel kernel;
   
   if (!initialised) {
-    initialised = 1;
+	size_t ndevices;
+	initialised = 1;
     
     context = poclu_create_any_context();
     if (!context) return -1;
     
-    size_t ndevices;
     clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, NULL, &ndevices);
     ndevices /= sizeof(cl_device_id);
-    cl_device_id devices[ndevices];
+	cl_device_id *devices = malloc(ndevices * sizeof(cl_device_id));
     clGetContextInfo(context, CL_CONTEXT_DEVICES,
                      ndevices*sizeof(cl_device_id), devices, NULL);
     
@@ -64,6 +64,7 @@ exec_scalarwave_kernel(char      const *const program_source,
     kernel = clCreateKernel(program, "scalarwave", NULL);
     if (!kernel) return -1;
     
+	free (devices);
   }
   
   size_t const npoints = grid->ai * grid->aj * grid->ak;
