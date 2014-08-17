@@ -3,6 +3,9 @@
 #define _BSD_SOURCE             // define M_PI
 
 #include <assert.h>
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +47,7 @@ exec_scalarwave_kernel(char      const *const program_source,
     
     clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, NULL, &ndevices);
     ndevices /= sizeof(cl_device_id);
-	cl_device_id *devices = malloc(ndevices * sizeof(cl_device_id));
+	cl_device_id *devices = (cl_device_id*)malloc(ndevices * sizeof(cl_device_id));
     clGetContextInfo(context, CL_CONTEXT_DEVICES,
                      ndevices*sizeof(cl_device_id), devices, NULL);
     
@@ -66,7 +69,7 @@ exec_scalarwave_kernel(char      const *const program_source,
     
 	free (devices);
   }
-  
+
   size_t const npoints = grid->ai * grid->aj * grid->ak;
   cl_mem const mem_phi =
     clCreateBuffer(context, 0,
@@ -153,7 +156,7 @@ main(void)
   size_t const source_size = ftell(source_file);
   fseek(source_file, 0, SEEK_SET);
   
-  char source[source_size + 1];
+  char *source = (char*)malloc(source_size + 1);
   fread(source, source_size, 1, source_file);
   source[source_size] = '\0';
   
@@ -167,11 +170,17 @@ main(void)
   grid.ai = grid.aj = grid.ak = roundup(NX);
   grid.ni = grid.nj = grid.nk = NX;
   
-  cl_double *restrict phi     =
+#ifdef _MSC_VER
+#define RESTRICT __restrict
+#else
+#define RESTRICT __restrict__
+#endif
+
+  cl_double *RESTRICT phi = (cl_double*)
     malloc (grid.ai*grid.aj*grid.ak * sizeof *phi    );
-  cl_double *restrict phi_p   =
+  cl_double *RESTRICT phi_p = (cl_double*)
     malloc (grid.ai*grid.aj*grid.ak * sizeof *phi_p  );
-  cl_double *restrict phi_p_p =
+  cl_double *RESTRICT phi_p_p = (cl_double*)
     malloc (grid.ai*grid.aj*grid.ak * sizeof *phi_p_p);
   
   // Set up initial data (TODO: do this on the device instead)

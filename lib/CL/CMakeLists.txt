@@ -92,6 +92,11 @@ set(POCL_LIB_SOURCES  "clCreateContextFromType.c"
                    "pocl_mem_management.c"  "pocl_mem_management.h"
                    "pocl_llvm_api.cc")
 
+# With visual studio c++ compiler also for .c files
+if (MSVC)
+SET_SOURCE_FILES_PROPERTIES( ${POCL_LIB_SOURCES} PROPERTIES LANGUAGE CXX )
+endif (MSVC)
+
 set(LIBPOCL_OBJS "$<TARGET_OBJECTS:llvmpasses>;$<TARGET_OBJECTS:libpocl_unlinked_objs>;${POCL_DEVICES_OBJS}")
 
 add_compile_options(${OCL_ICD_CFLAGS})

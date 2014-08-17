@@ -43,7 +43,9 @@ POname(clCreateContextFromType)(const cl_context_properties *properties,
   int errcode;
 
   /* initialize libtool here, LT will be needed when loading the kernels */     
+#ifndef _MSC_VER
   lt_dlinit();
+#endif
   pocl_init_devices();
 
   cl_context context = (cl_context) malloc(sizeof(struct _cl_context));
