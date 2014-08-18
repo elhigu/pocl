@@ -125,7 +125,7 @@ POname(clCreateProgramWithBinary)(cl_context                     context,
 
   program->context = context;
   program->num_devices = num_devices;
-  program->devices = malloc (sizeof(cl_device_id) * num_devices);
+  program->devices = (cl_device_id*) malloc(sizeof(cl_device_id)* num_devices);
   program->source = NULL;
   program->kernels = NULL;
   /* Create the temporary directory where all kernel files and compilation

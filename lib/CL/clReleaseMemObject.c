@@ -24,6 +24,8 @@
 #include "utlist.h"
 #include "pocl_cl.h"
 
+#include <malloc.h>
+
 CL_API_ENTRY cl_int CL_API_CALL
 POname(clReleaseMemObject)(cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
 {

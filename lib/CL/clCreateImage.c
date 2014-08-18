@@ -23,6 +23,9 @@
 #include "pocl_cl.h"
 #include "pocl_image_util.h"
 
+#include <stdlib.h>
+#include <malloc.h>
+
 extern CL_API_ENTRY cl_mem CL_API_CALL
 POname(clCreateImage) (cl_context              context,
                        cl_mem_flags            flags,
@@ -71,7 +74,7 @@ CL_API_SUFFIX__VERSION_1_2
     if (errcode != CL_SUCCESS || num_entries == 0)
       goto ERROR;
 
-    supported_image_formats = malloc (num_entries * sizeof(cl_image_format));
+	supported_image_formats = (cl_image_format*) malloc(num_entries * sizeof(cl_image_format));
     if (supported_image_formats == NULL)
       {
         errcode = CL_OUT_OF_HOST_MEMORY;

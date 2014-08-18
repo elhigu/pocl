@@ -23,7 +23,7 @@
 
 #include "pocl_cl.h"
 
-
+#include <stdlib.h>
 
 #define POCL_RETURN_MEM_INFO(__TYPE__, __VALUE__)                       \
   {                                                                     \

@@ -1,4 +1,7 @@
 #include "pocl_cl.h"
+
+#include <stdlib.h>
+
 CL_API_ENTRY cl_int CL_API_CALL
 POname(clEnqueueWaitForEvents)(cl_command_queue  command_queue,
                        cl_uint           num_events,

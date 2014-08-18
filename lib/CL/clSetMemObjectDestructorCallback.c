@@ -1,5 +1,7 @@
 #include "pocl_cl.h"
 
+#include <stdlib.h>
+
 CL_API_ENTRY cl_int CL_API_CALL
 POname(clSetMemObjectDestructorCallback)(  cl_mem  memobj , 
                                     void (CL_CALLBACK * pfn_notify)( cl_mem /* memobj */, void* /*user_data*/), 

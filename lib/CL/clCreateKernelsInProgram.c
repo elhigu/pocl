@@ -8,6 +8,7 @@
 #include "pocl_llvm.h"
 #include "pocl_intfn.h"
 
+#include <malloc.h>
 
 CL_API_ENTRY cl_int CL_API_CALL
 POname(clCreateKernelsInProgram)(cl_program      program ,

@@ -25,6 +25,8 @@
 #include "pocl_cl.h"
 #include "devices.h"
 
+#include <malloc.h>
+
 CL_API_ENTRY cl_mem CL_API_CALL
 POname(clCreateBuffer)(cl_context context,
                cl_mem_flags flags,

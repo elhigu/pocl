@@ -30,8 +30,7 @@
 #include <stdio.h>
 
 #ifdef _MSC_VER
-// TODO: ADD PORTABLE MACROS
-typedef struct { int a;  }* lt_dlhandle;
+typedef void* lt_dlhandle;
 #else
 #include <ltdl.h>
 #endif

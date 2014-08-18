@@ -24,6 +24,8 @@
 #include "pocl_cl.h"
 #include "devices.h"
 
+#include <malloc.h>
+
 /* NOTE: this function is untested! */
 CL_API_ENTRY cl_mem CL_API_CALL
 POname(clCreateSubBuffer)(cl_mem                   buffer,
@@ -128,7 +130,7 @@ POname(clCreateSubBuffer)(cl_mem                   buffer,
       mem->mem_host_ptr = (char*)(buffer->mem_host_ptr) + info->origin;
     }
 
-  mem->device_ptrs = 
+  mem->device_ptrs = (pocl_mem_identifier *)
     malloc(pocl_num_devices * sizeof(pocl_mem_identifier *));
   if (mem->device_ptrs == NULL)
     {

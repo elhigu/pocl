@@ -1,5 +1,9 @@
 #include "pocl_cl.h"
 #include "pocl_icd.h"
+
+#include <stdlib.h>
+#include <malloc.h>
+
 extern CL_API_ENTRY cl_sampler CL_API_CALL
 POname(clCreateSampler)(cl_context          context,
                 cl_bool             normalized_coords, 
