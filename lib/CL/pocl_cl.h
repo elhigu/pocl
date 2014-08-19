@@ -175,9 +175,9 @@ typedef pthread_mutex_t pocl_lock_t;
 // or what?!
 
 // for now just don't declare these... (probably ICD stuff does not work)
-#  define POdeclsym(name) ;
-#  define POCL_ALIAS_OPENCL_SYMBOL(name) ;
-#  define POsymAlways(name) ;
+#  define POdeclsym(name) decltype(name) PO##name;
+#  define POCL_ALIAS_OPENCL_SYMBOL(name) PO##name;
+#  define POsymAlways(name) POCL_ALIAS_OPENCL_SYMBOL(name);
 #else
 #  define POdeclsym(name)			\
   __typeof__(name) PO##name __attribute__((visibility("hidden")));
