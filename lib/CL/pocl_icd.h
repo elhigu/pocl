@@ -49,75 +49,75 @@ struct _cl_icd_dispatch {
  * TODO: the NULL entries are functions that lack implementation (or even stubs) in pocl
  */
 #define POCL_ICD_DISPATCH {           \
-  &POclGetPlatformIDs,          \
-  &POclGetPlatformInfo,         \
-  &POclGetDeviceIDs,            \
-  &POclGetDeviceInfo,           \
-  &POclCreateContext,           \
-  &POclCreateContextFromType,   \
-  &POclRetainContext,           \
-  &POclReleaseContext,          \
-  &POclGetContextInfo,          \
-  &POclCreateCommandQueue,      \
-  &POclRetainCommandQueue, /* 10 */           \
-  &POclReleaseCommandQueue,     \
-  &POclGetCommandQueueInfo,     \
+  &POname(clGetPlatformIDs),          \
+  &POname(clGetPlatformInfo), \
+  &POname(clGetDeviceIDs), \
+  &POname(clGetDeviceInfo), \
+  &POname(clCreateContext), \
+  &POname(clCreateContextFromType), \
+  &POname(clRetainContext), \
+  &POname(clReleaseContext), \
+  &POname(clGetContextInfo), \
+  &POname(clCreateCommandQueue), \
+  &POname(clRetainCommandQueue), /* 10 */           \
+  &POname(clReleaseCommandQueue), \
+  &POname(clGetCommandQueueInfo), \
   NULL /*clSetCommandQueueProperty*/, \
-  &POclCreateBuffer,            \
-  &POclCreateImage2D,           \
-  &POclCreateImage3D,           \
-  &POclRetainMemObject,         \
-  &POclReleaseMemObject,        \
-  &POclGetSupportedImageFormats,\
-  &POclGetMemObjectInfo, /* 20 */             \
-  &POclGetImageInfo,            \
-  &POclCreateSampler,           \
-  &POclRetainSampler,           \
-  &POclReleaseSampler,          \
-  &POclGetSamplerInfo,          \
-  &POclCreateProgramWithSource, \
-  &POclCreateProgramWithBinary, \
-  &POclRetainProgram,           \
-  &POclReleaseProgram,          \
-  &POclBuildProgram, /* 30 */ \
-  &POclUnloadCompiler,          \
-  &POclGetProgramInfo,          \
-  &POclGetProgramBuildInfo,     \
-  &POclCreateKernel,            \
-  &POclCreateKernelsInProgram,  \
-  &POclRetainKernel,            \
-  &POclReleaseKernel,           \
-  &POclSetKernelArg,            \
-  &POclGetKernelInfo,           \
-  &POclGetKernelWorkGroupInfo, /* 40 */       \
-  &POclWaitForEvents,           \
-  &POclGetEventInfo,            \
-  &POclRetainEvent,             \
-  &POclReleaseEvent,            \
-  &POclGetEventProfilingInfo,   \
-  &POclFlush,                   \
-  &POclFinish,                  \
-  &POclEnqueueReadBuffer,       \
-  &POclEnqueueWriteBuffer,      \
-  &POclEnqueueCopyBuffer, /* 50 */  \
-  &POclEnqueueReadImage,        \
-  &POclEnqueueWriteImage,       \
-  &POclEnqueueCopyImage,        \
-  &POclEnqueueCopyImageToBuffer,\
-  &POclEnqueueCopyBufferToImage,\
-  &POclEnqueueMapBuffer,        \
-  &POclEnqueueMapImage,         \
-  &POclEnqueueUnmapMemObject,   \
-  &POclEnqueueNDRangeKernel,    \
-  &POclEnqueueTask, /* 60 */  \
-  &POclEnqueueNativeKernel,     \
-  &POclEnqueueMarker,           \
-  &POclEnqueueWaitForEvents,    \
-  &POclEnqueueBarrier,          \
-  &POclGetExtensionFunctionAddress, \
+  &POname(clCreateBuffer), \
+  &POname(clCreateImage2D), \
+  &POname(clCreateImage3D), \
+  &POname(clRetainMemObject), \
+  &POname(clReleaseMemObject), \
+  &POname(clGetSupportedImageFormats), \
+  &POname(clGetMemObjectInfo), /* 20 */             \
+  &POname(clGetImageInfo), \
+  &POname(clCreateSampler), \
+  &POname(clRetainSampler), \
+  &POname(clReleaseSampler), \
+  &POname(clGetSamplerInfo), \
+  &POname(clCreateProgramWithSource), \
+  &POname(clCreateProgramWithBinary), \
+  &POname(clRetainProgram), \
+  &POname(clReleaseProgram), \
+  &POname(clBuildProgram), /* 30 */ \
+  &POname(clUnloadCompiler), \
+  &POname(clGetProgramInfo), \
+  &POname(clGetProgramBuildInfo), \
+  &POname(clCreateKernel), \
+  &POname(clCreateKernelsInProgram), \
+  &POname(clRetainKernel), \
+  &POname(clReleaseKernel), \
+  &POname(clSetKernelArg), \
+  &POname(clGetKernelInfo), \
+  &POname(clGetKernelWorkGroupInfo), /* 40 */       \
+  &POname(clWaitForEvents), \
+  &POname(clGetEventInfo), \
+  &POname(clRetainEvent), \
+  &POname(clReleaseEvent), \
+  &POname(clGetEventProfilingInfo), \
+  &POname(clFlush), \
+  &POname(clFinish), \
+  &POname(clEnqueueReadBuffer), \
+  &POname(clEnqueueWriteBuffer), \
+  &POname(clEnqueueCopyBuffer), /* 50 */  \
+  &POname(clEnqueueReadImage), \
+  &POname(clEnqueueWriteImage), \
+  &POname(clEnqueueCopyImage), \
+  &POname(clEnqueueCopyImageToBuffer), \
+  &POname(clEnqueueCopyBufferToImage), \
+  &POname(clEnqueueMapBuffer), \
+  &POname(clEnqueueMapImage), \
+  &POname(clEnqueueUnmapMemObject), \
+  &POname(clEnqueueNDRangeKernel), \
+  &POname(clEnqueueTask), /* 60 */  \
+  &POname(clEnqueueNativeKernel), \
+  &POname(clEnqueueMarker), \
+  &POname(clEnqueueWaitForEvents), \
+  &POname(clEnqueueBarrier), \
+  &POname(clGetExtensionFunctionAddress), \
   NULL, /* &POclCreateFromGLBuffer,      */ \
-  &POclCreateFromGLTexture2D,   \
-  &POclCreateFromGLTexture3D,   \
+  &POname(clCreateFromGLTexture2D), \
+  &POname(clCreateFromGLTexture3D), \
   NULL, /* &POclCreateFromGLRenderbuffer, */ \
   NULL, /* &POclGetGLObjectInfo,  70       */ \
   NULL, /* &POclGetGLTextureInfo,        */ \
@@ -130,31 +130,31 @@ struct _cl_icd_dispatch {
   NULL, /* &clUnknown78 */      \
   NULL, /* &clUnknown79 */      \
   NULL, /* &clUnknown80 */      \
-  &POclSetEventCallback,        \
-  &POclCreateSubBuffer,         \
-  &POclSetMemObjectDestructorCallback, \
-  &POclCreateUserEvent,         \
-  &POclSetUserEventStatus,      \
-  &POclEnqueueReadBufferRect,   \
-  &POclEnqueueWriteBufferRect,  \
-  &POclEnqueueCopyBufferRect,   \
+  &POname(clSetEventCallback), \
+  &POname(clCreateSubBuffer), \
+  &POname(clSetMemObjectDestructorCallback), \
+  &POname(clCreateUserEvent), \
+  &POname(clSetUserEventStatus), \
+  &POname(clEnqueueReadBufferRect), \
+  &POname(clEnqueueWriteBufferRect), \
+  &POname(clEnqueueCopyBufferRect), \
   NULL, /* &POclCreateSubDevicesEXT,     */ \
-  &POclRetainDevice, /* &POclRetainDeviceEXT,         */ \
-  &POclReleaseDevice, /* &POclReleaseDeviceEXT,        */ \
+  &POname(clRetainDevice), /* &POclRetainDeviceEXT,         */ \
+  &POname(clReleaseDevice), /* &POclReleaseDeviceEXT,        */ \
   NULL, /* &clUnknown92 */      \
   NULL, /* &POclCreateSubDevices,        */ \
-  &POclRetainDevice,                      \
-  &POclReleaseDevice,                     \
-  &POclCreateImage,                               \
+  &POname(clRetainDevice), \
+  &POname(clReleaseDevice), \
+  &POname(clCreateImage), \
   NULL, /* &POclCreateProgramWithBuiltInKernels, */ \
   NULL, /* &POclCompileProgram,          */ \
   NULL, /* &POclLinkProgram,             */ \
   NULL, /* &POclUnloadPlatformCompiler,  */ \
-  &POclGetKernelArgInfo,   \
+  &POname(clGetKernelArgInfo), \
   NULL, /* &POclEnqueueFillBuffer,        */ \
-  &POclEnqueueFillImage,         \
+  &POname(clEnqueueFillImage), \
   NULL, /* &POclEnqueueMigrateMemObjects, */ \
-  &POclEnqueueMarkerWithWaitList,  \
+  &POname(clEnqueueMarkerWithWaitList), \
   NULL, /* &POclEnqueueBarrierWithWaitList, */ \
   NULL, /* &POclGetExtensionFunctionAddressForPlatform, */ \
   NULL, /* &POclCreateFromGLTexture,     */ \

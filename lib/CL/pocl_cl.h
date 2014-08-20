@@ -175,8 +175,8 @@ typedef pthread_mutex_t pocl_lock_t;
 // or what?!
 
 // for now just don't declare these... (probably ICD stuff does not work)
-#  define POdeclsym(name) decltype(name) PO##name;
-#  define POCL_ALIAS_OPENCL_SYMBOL(name) PO##name;
+#  define POdeclsym(name) ;
+#  define POCL_ALIAS_OPENCL_SYMBOL(name) ;
 #  define POsymAlways(name) POCL_ALIAS_OPENCL_SYMBOL(name);
 #else
 #  define POdeclsym(name)			\
@@ -187,8 +187,12 @@ typedef pthread_mutex_t pocl_lock_t;
 #endif
 
 /* Symbol aliases are supported */
-
+#ifdef _MSC_VER
+#  define POname(name) name
+#else
 #  define POname(name) PO##name
+#endif
+
 #  ifdef DIRECT_LINKAGE
 #    define POsym(name) POCL_ALIAS_OPENCL_SYMBOL(name)
 #  else
