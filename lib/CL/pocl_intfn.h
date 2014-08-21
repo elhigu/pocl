@@ -24,9 +24,12 @@
 #ifndef POCL_INTFN_H
 #define POCL_INTFN_H
 
-#ifndef POCL_CL_H
+#if (!defined(POCL_CL_H) && !defined(_MSC_VER))
 #  error this file must be included through pocl_cl.h, not directly
 #endif
+
+#define POdeclsym(name)  ;
+#define POdeclsymICD(name) POdeclsym(name)
 
 POdeclsym(clBuildProgram)
 POdeclsym(clCreateBuffer)
