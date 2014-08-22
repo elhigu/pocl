@@ -27,6 +27,63 @@
 #include <string.h>
 #ifdef _MSC_VER
 #include <io.h>
+#define R_OK    4
+#define W_OK    2
+#define F_OK    0
+
+#include <stdlib.h>
+#include <direct.h>
+#define MKDIR(x) mkdir(x)
+#define strtok_r strtok_s
+
+void gen_random(char *s, const int len) {
+	static const char alphanum[] =
+		"0123456789"
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz";
+
+	for (int i = 0; i < len; ++i) {
+		s[i] = alphanum[rand() % (sizeof(alphanum)-1)];
+	}
+
+	s[len] = 0;
+}
+
+void mkdtemp(char *temp) {
+	int rnd_start = strlen(temp) - 6;
+	gen_random(&temp[rnd_start], 6);
+	MKDIR(temp);
+}
+
+// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
+#include <stdarg.h>
+#include <stdio.h>
+#define snprintf c99_snprintf
+
+inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+{
+	int count = -1;
+
+	if (size != 0)
+		count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
+	if (count == -1)
+		count = _vscprintf(format, ap);
+
+	return count;
+}
+
+inline int c99_snprintf(char* str, size_t size, const char* format, ...)
+{
+	int count;
+	va_list ap;
+
+	va_start(ap, format);
+	count = c99_vsnprintf(str, size, format, ap);
+	va_end(ap);
+
+	return count;
+}
+
 #else
 #include <unistd.h>
 #endif
