@@ -19,11 +19,14 @@ add_compile_options(${OPENCL_CFLAGS})
 
 foreach(PROG ${PROGRAMS_TO_BUILD})
   add_executable("${PROG}" "${PROG}.c")
+  # With visual studio c++ compiler also for .c files
+  if (MSVC)
+    SET_SOURCE_FILES_PROPERTIES( "${PROG}.c" PROPERTIES LANGUAGE CXX )
+  endif (MSVC)
   target_link_libraries("${PROG}" ${POCLU_LINK_OPTIONS})
 endforeach()
 
 #######################################################################
-
 
 add_test("runtime/clGetDeviceInfo" "test_clGetDeviceInfo")
 
