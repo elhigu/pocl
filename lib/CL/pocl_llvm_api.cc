@@ -97,6 +97,51 @@ using llvm::sys::fs::F_Binary;
 #define F_Binary llvm::sys::fs::F_None
 #endif
 
+#ifdef _MSC_VER
+#include <io.h>
+#define R_OK    4
+#define W_OK    2
+#define F_OK    0
+
+
+#include <stdlib.h>
+#include <direct.h>
+#define MKDIR(x) mkdir(x)
+#define strtok_r strtok_s
+
+// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
+#include <stdarg.h>
+#define snprintf c99_snprintf
+
+inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+{
+	int count = -1;
+
+	if (size != 0)
+		count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
+	if (count == -1)
+		count = _vscprintf(format, ap);
+
+	return count;
+}
+
+inline int c99_snprintf(char* str, size_t size, const char* format, ...)
+{
+	int count;
+	va_list ap;
+
+	va_start(ap, format);
+	count = c99_vsnprintf(str, size, format, ap);
+	va_end(ap);
+
+	return count;
+}
+
+#else
+#include <unistd.h>
+#define MKDIR(x) mkdir(x, S_IRWXU) 
+#endif
+
 
 /**
  * Use one global LLVMContext across all LLVM bitcodes. This is because
@@ -514,7 +559,7 @@ int pocl_llvm_get_kernel_metadata(cl_program program,
 
   snprintf (tmpdir, POCL_FILENAME_LENGTH, "%s/%s", 
             device_tmpdir, kernel_name);
-  mkdir(tmpdir, S_IRWXU);
+  MKDIR(tmpdir);
 
   (void) snprintf(descriptor_filename, POCL_FILENAME_LENGTH,
                     "%s/%s/descriptor.so", device_tmpdir, kernel_name);

@@ -29,6 +29,11 @@
 #include <malloc.h>
 #ifdef _MSC_VER
     #include <io.h>
+	#define R_OK    4
+	#define W_OK    2
+	#define F_OK    0
+
+
 	#include <stdlib.h>
     #include <direct.h>
 	#define MKDIR(x) mkdir(x)
