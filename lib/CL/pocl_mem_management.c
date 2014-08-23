@@ -25,6 +25,8 @@
 #include "pocl.h"
 #include "utlist.h"
 
+#include <malloc.h>
+
 typedef struct _mem_manager
 {
   pocl_lock_t event_lock;
@@ -40,7 +42,7 @@ void pocl_init_mem_manager (void)
 {
   if (!mm)
     {
-      mm = calloc (1, sizeof (pocl_mem_manager));
+	  mm = (pocl_mem_manager*)calloc(1, sizeof (pocl_mem_manager));
       POCL_INIT_LOCK (mm->event_lock);
       POCL_INIT_LOCK (mm->cmd_lock);
     }
@@ -59,7 +61,7 @@ cl_event pocl_mem_manager_new_event ()
     }
   POCL_UNLOCK (mm->event_lock);
     
-  ev = calloc (1, sizeof (struct _cl_event));
+  ev = (struct _cl_event*)calloc(1, sizeof (struct _cl_event));
   POCL_INIT_OBJECT(ev);
   ev->pocl_refcount = 2;
   return ev;
@@ -83,7 +85,7 @@ _cl_command_node* pocl_mem_manager_new_command ()
   if (cmd)
     return cmd;
   
-  return calloc (1, sizeof (_cl_command_node));
+  return (_cl_command_node*)calloc(1, sizeof (_cl_command_node));
 }
 
 void pocl_mem_manager_free_command ( _cl_command_node *cmd_ptr)

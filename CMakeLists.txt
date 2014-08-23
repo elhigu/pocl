@@ -107,6 +107,8 @@ endif()
 # which does not contain e.g. Support/DataTypes.h
 include_directories("${LLVM_INCLUDEDIR}")
 
+include_directories("${LLVM_SRC_ROOT}/tools/clang/include")
+
 # compiled includes...
 include_directories("${LLVM_OBJ_ROOT}/include")
 
