@@ -29,7 +29,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <unistd.h>
+
+#ifdef _MSC_VER
+  #include <process.h>
+#else
+  #include <unistd.h>
+#endif
 
 #define WORK_ITEMS 1
 

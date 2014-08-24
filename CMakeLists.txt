@@ -288,6 +288,14 @@ endif()
 ######################################################################################
 # DONE
 
+find_program (PATCH_EXEC 
+  NAMES patch patch.exe
+)
+
+if (!PATCH_EXEC)
+  message(FATAL_ERROR "Could not find patch command.")
+endif()
+
 if(WIN32)
   message(STATUS "TODO: We could use FindOpenCL.cmake to checkout if there is ICD loader installed in Windows.")
   set(DEFAULT_ENABLE_ICD TRUE)
@@ -955,6 +963,7 @@ MESSAGE(STATUS "LLVM_LIBDIR: ${LLVM_LIBDIR}")
 MESSAGE(STATUS "LLVM_INCLUDEDIR: ${LLVM_INCLUDEDIR}")
 MESSAGE(STATUS "LLVM_OBJ_ROOT: ${LLVM_OBJ_ROOT}")
 MESSAGE(STATUS "LLVM_SRC_ROOT: ${LLVM_SRC_ROOT}")
+MESSAGE(STATUS "PATCH_EXEC: ${PATCH_EXEC}")
   # these are a bit too long..
 #MESSAGE(STATUS "LLVM_LIBS: ${LLVM_LIBS}")
 #MESSAGE(STATUS "LLVM_LIBFILES: ${LLVM_LIBFILES}")
