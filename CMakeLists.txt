@@ -288,8 +288,17 @@ endif()
 ######################################################################################
 # DONE
 
+# These tools are provided by git in windows
 find_program (PATCH_EXEC 
   NAMES patch patch.exe
+)
+
+find_program (XARGS_EXEC 
+  NAMES xargs xargs.exe
+)
+
+find_program (CAT_EXEC 
+  NAMES cat cat.exe
 )
 
 if (!PATCH_EXEC)
@@ -964,6 +973,8 @@ MESSAGE(STATUS "LLVM_INCLUDEDIR: ${LLVM_INCLUDEDIR}")
 MESSAGE(STATUS "LLVM_OBJ_ROOT: ${LLVM_OBJ_ROOT}")
 MESSAGE(STATUS "LLVM_SRC_ROOT: ${LLVM_SRC_ROOT}")
 MESSAGE(STATUS "PATCH_EXEC: ${PATCH_EXEC}")
+MESSAGE(STATUS "XARGS_EXEC: ${XARGS_EXEC}")
+MESSAGE(STATUS "CAT_EXEC: ${CAT_EXEC}")
   # these are a bit too long..
 #MESSAGE(STATUS "LLVM_LIBS: ${LLVM_LIBS}")
 #MESSAGE(STATUS "LLVM_LIBFILES: ${LLVM_LIBFILES}")
