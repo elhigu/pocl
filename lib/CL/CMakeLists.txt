@@ -111,16 +111,37 @@ add_library("libpocl_unlinked_objs" OBJECT ${POCL_LIB_SOURCES})
 
 set(POCL_PUBLIC_LINK_LIST "-lstdc++" "${LTDL_LIB}" ${POCL_DEVICES_LINK_LIST})
 
-# TODO test static POCL_LLVM_LIBS
+# TODO test static POCL_LLVM_LIBS... probably we should fingure out everything about 
+#      environment already in base configuration e.g. if we need to use static libs and 
+#      if we need some special flags etc.
 set(POCL_PRIVATE_LINK_LIST ${POCL_LLVM_LIBS})
-list(APPEND POCL_PRIVATE_LINK_LIST  -lclangFrontend -lclangDriver -lclangParse -lclangSema -lclangEdit -lclangLex -lclangSerialization -lclangBasic -lclangFrontendTool -lclangRewriteFrontend -lclangStaticAnalyzerFrontend -lclangStaticAnalyzerCore -lclangAnalysis -lclangCodeGen -lclangAST )
+separate_arguments(POCL_PRIVATE_LINK_LIST)
+list(APPEND POCL_PRIVATE_LINK_LIST -lclangFrontend -lclangDriver -lclangParse -lclangSema -lclangEdit -lclangLex -lclangSerialization -lclangBasic -lclangFrontendTool -lclangRewriteFrontend -lclangStaticAnalyzerFrontend -lclangStaticAnalyzerCore -lclangAnalysis -lclangCodeGen -lclangAST)
+
+# There is no dynamic llvm libs for windows -> change list to static .lib refs
+if (MSVC)
+  SET(LLVM_MSVC_STATIC_LIB_LIST "")
+  foreach(LIBFLAG ${POCL_PRIVATE_LINK_LIST})
+	STRING(REGEX REPLACE "^-l" "" STATIC_LIB_NAME ${LIBFLAG})
+	list(APPEND LLVM_MSVC_STATIC_LIB_LIST "${STATIC_LIB_NAME}.lib")
+  endforeach()
+endif()
 
 #################################################################
 
 
 add_library("pocl" ${LIBPOCL_OBJS} )
-set_target_properties("pocl" PROPERTIES SOVERSION "${LIB_API_VERSION}" VERSION "${LIB_BUILD_VERSION}" LINK_FLAGS "${LLVM_LDFLAGS} ${ICD_LD_FLAGS}")
-target_link_libraries("pocl" PUBLIC ${POCL_PUBLIC_LINK_LIST} PRIVATE ${POCL_PRIVATE_LINK_LIST} )
+set_target_properties("pocl" PROPERTIES 
+	SOVERSION "${LIB_API_VERSION}" 
+	VERSION "${LIB_BUILD_VERSION}" 
+	LINK_FLAGS "${LLVM_LDFLAGS} ${ICD_LD_FLAGS}")
+
+if (MSVC)
+	target_link_libraries("pocl" ${LLVM_MSVC_STATIC_LIB_LIST} ${Hwloc_LIBRARIES} ${Pthreads_LIBRARIES})
+else()
+	target_link_libraries("pocl" PUBLIC ${POCL_PUBLIC_LINK_LIST} PRIVATE ${POCL_PRIVATE_LINK_LIST} )
+endif ()
+
 install(TARGETS "pocl"
         LIBRARY DESTINATION ${POCL_INSTALL_PUBLIC_LIBDIR}
         ARCHIVE DESTINATION ${POCL_INSTALL_PUBLIC_LIBDIR}/static)
