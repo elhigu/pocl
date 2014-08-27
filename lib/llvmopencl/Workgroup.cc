@@ -71,7 +71,6 @@
 #include <stdlib.h>
 #include <direct.h>
 #define MKDIR(x) mkdir(x)
-#define strtok_r strtok_s
 
 // http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
 #include <stdarg.h>

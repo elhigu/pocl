@@ -34,7 +34,6 @@
 #include <stdlib.h>
 #include <direct.h>
 #define MKDIR(x) mkdir(x)
-#define strtok_r strtok_s
 
 void gen_random(char *s, const int len) {
 	static const char alphanum[] =

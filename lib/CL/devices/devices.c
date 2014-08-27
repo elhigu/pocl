@@ -24,8 +24,10 @@
 
 #ifdef _MSC_VER
 	#include <io.h>
+    #define STRTOK(a,b,c) strtok_s(a,b,c)
 #else
 	#include <unistd.h>
+    #define STRTOK(a,b,c) strtok_r(a,b,c)
 #endif
 
 #include <string.h>
@@ -82,7 +84,7 @@ int pocl_device_get_env_count(const char *dev_type)
       return -1;
     }
   ptr = tofree = strdup(dev_env);
-  while ((token = strtok_r (ptr, " ", &saveptr)) != NULL)
+  while ((token = STRTOK (ptr, " ", &saveptr)) != NULL)
     {
       if(strcmp(token, dev_type) == 0)
         dev_count++;

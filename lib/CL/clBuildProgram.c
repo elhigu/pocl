@@ -37,7 +37,7 @@
 	#include <stdlib.h>
     #include <direct.h>
 	#define MKDIR(x) mkdir(x)
-    #define strtok_r strtok_s
+    #define STRTOK(a,b,c) strtok_s(a,b,c)
 
 	// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
 	#include <stdarg.h>
@@ -70,6 +70,7 @@
 #else
 	#include <unistd.h>
     #define MKDIR(x) mkdir(x, S_IRWXU) 
+    #define STRTOK(a,b,c) strtok_r(a,b,c)
 #endif
 #include <sys/stat.h>
 #include "pocl_llvm.h"
@@ -149,7 +150,7 @@ CL_API_SUFFIX__VERSION_1_0
     {
       modded_options = (char*)calloc (512, 1);
       temp_options = strdup (options);
-      token = strtok_r (temp_options, " ", &saveptr);
+      token = STRTOK (temp_options, " ", &saveptr);
       while (token != NULL)
         {
           /* check if parameter is supported compiler parameter */
@@ -163,7 +164,7 @@ CL_API_SUFFIX__VERSION_1_0
                 }
               else if (strstr (cl_parameters_not_yet_supported_by_clang, token))
                 {
-                  token = strtok_r (NULL, " ", &saveptr);  
+                  token = STRTOK (NULL, " ", &saveptr);  
                   continue;
                 }
               else
@@ -179,7 +180,7 @@ CL_API_SUFFIX__VERSION_1_0
               /* if there is a space in between, then next token is part 
                  of the option */
               if (strlen (token) == 2)
-                token = strtok_r (NULL, " ", &saveptr);
+                token = STRTOK (NULL, " ", &saveptr);
             }
           else
             {
@@ -188,7 +189,7 @@ CL_API_SUFFIX__VERSION_1_0
             }
           strcat (modded_options, token);
           strcat (modded_options, " ");
-          token = strtok_r (NULL, " ", &saveptr);  
+          token = STRTOK (NULL, " ", &saveptr);  
         }
       free (temp_options);
       
