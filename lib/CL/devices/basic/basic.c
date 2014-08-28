@@ -36,10 +36,12 @@
     #include <io.h>
     #include <Windows.h>
     #define RESTRICT __restrict
+    #define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #else
     #include <unistd.h>
     #include <sys/time.h>
     #define RESTRICT __restrict__
+    #define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #endif
 
 #include <dev_image.h>
@@ -789,7 +791,7 @@ void check_compiler_cache (_cl_command_node *cmd)
               "reported as 'file not found' errors.\n");
       abort();
     }
-  snprintf (workgroup_string, WORKGROUP_STRING_LENGTH,
+  SNPRINTF(workgroup_string, WORKGROUP_STRING_LENGTH,
             "_%s_workgroup", cmd->command.run.kernel->function_name);
   cmd->command.run.wg = ci->wg = 
     (pocl_workgroup) lt_dlsym (dlhandle, workgroup_string);

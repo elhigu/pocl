@@ -27,6 +27,11 @@
 #include <CL/opencl.h>
 #include "poclu.h"
 
+#ifdef _MSC_VER
+    #define SNPRINTF(...) _snprintf(__VA_ARGS__)
+#else
+    #define SNPRINTF(...) snprintf(__VA_ARGS__)
+#endif
 /**
  * The test kernels are assumed to:
  *
@@ -59,7 +64,7 @@ main (int argc, char **argv)
   size_t local_work_size[3];
   char kernel_path[2048];
 
-  snprintf (kernel_path, 2048,  "%s/%s", SRCDIR, argv[1]);
+  SNPRINTF(kernel_path, 2048, "%s/%s", SRCDIR, argv[1]);
   source_file = fopen(kernel_path, "r");
   assert(source_file != NULL && "Kernel .cl not found.");
 

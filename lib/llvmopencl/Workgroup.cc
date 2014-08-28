@@ -71,35 +71,9 @@
 #include <stdlib.h>
 #include <direct.h>
 #define MKDIR(x) mkdir(x)
-
-// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
-#include <stdarg.h>
-#define snprintf c99_snprintf
-
-inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
-{
-	int count = -1;
-
-	if (size != 0)
-		count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
-	if (count == -1)
-		count = _vscprintf(format, ap);
-
-	return count;
-}
-
-inline int c99_snprintf(char* str, size_t size, const char* format, ...)
-{
-	int count;
-	va_list ap;
-
-	va_start(ap, format);
-	count = c99_vsnprintf(str, size, format, ap);
-	va_end(ap);
-
-	return count;
-}
-
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
+#else
+#define SNPRINTF(...) snprintf(__VA_ARGS__)
 #endif
 
 
@@ -312,7 +286,7 @@ createLauncher(Module &M, Function *F)
   ptr = builder.CreateStructGEP(ai,
 				TypeBuilder<PoclContext, true>::GROUP_ID);
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_group_id_%c", 'x' + i);
+    SNPRINTF(s, STRING_LENGTH, "_group_id_%c", 'x' + i);
     gv = M.getGlobalVariable(s);
     if (gv != NULL) {
       if (size_t_width == 64)
@@ -330,7 +304,7 @@ createLauncher(Module &M, Function *F)
   ptr = builder.CreateStructGEP(ai,
 				TypeBuilder<PoclContext, true>::NUM_GROUPS);
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_num_groups_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_num_groups_%c", 'x' + i);
     gv = M.getGlobalVariable(s);
     if (gv != NULL) {
       if (size_t_width == 64)
@@ -348,7 +322,7 @@ createLauncher(Module &M, Function *F)
   ptr = builder.CreateStructGEP(ai,
 				TypeBuilder<PoclContext, true>::GLOBAL_OFFSET);
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_global_offset_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_global_offset_%c", 'x' + i);
     gv = M.getGlobalVariable(s);
     if (gv != NULL) {
       if (size_t_width == 64)
@@ -383,7 +357,7 @@ privatizeContext(Module &M, Function *F)
 
   // Privatize _local_id  
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_local_id_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_local_id_%c", 'x' + i);
     gv[i] = M.getGlobalVariable(s);
     if (gv[i] != NULL) {
       ai[i] = builder.CreateAlloca(gv[i]->getType()->getElementType(),
@@ -404,7 +378,7 @@ privatizeContext(Module &M, Function *F)
   
   // Privatize _local_size
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_local_size_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_local_size_%c", 'x' + i);
     gv[i] = M.getGlobalVariable(s);
     if (gv[i] != NULL) {
       ai[i] = builder.CreateAlloca(gv[i]->getType()->getElementType(),
@@ -442,7 +416,7 @@ privatizeContext(Module &M, Function *F)
   
   // Privatize _num_groups
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_num_groups_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_num_groups_%c", 'x' + i);
     gv[i] = M.getGlobalVariable(s);
     if (gv[i] != NULL) {
       ai[i] = builder.CreateAlloca(gv[i]->getType()->getElementType(),
@@ -463,7 +437,7 @@ privatizeContext(Module &M, Function *F)
 
   // Privatize _group_id
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_group_id_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_group_id_%c", 'x' + i);
     gv[i] = M.getGlobalVariable(s);
     if (gv[i] != NULL) {
       ai[i] = builder.CreateAlloca(gv[i]->getType()->getElementType(),
@@ -484,7 +458,7 @@ privatizeContext(Module &M, Function *F)
   
   // Privatize _global_offset
   for (int i = 0; i < 3; ++i) {
-    snprintf(s, STRING_LENGTH, "_global_offset_%c", 'x' + i);
+	SNPRINTF(s, STRING_LENGTH, "_global_offset_%c", 'x' + i);
     gv[i] = M.getGlobalVariable(s);
     if (gv[i] != NULL) {
       ai[i] = builder.CreateAlloca(gv[i]->getType()->getElementType(),

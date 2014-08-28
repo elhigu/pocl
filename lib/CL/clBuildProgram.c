@@ -38,10 +38,10 @@
     #include <direct.h>
 	#define MKDIR(x) mkdir(x)
     #define STRTOK(a,b,c) strtok_s(a,b,c)
+    #define SNPRINTF(...) _snprintf(__VA_ARGS__)
 
 	// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
 	#include <stdarg.h>
-	#define snprintf c99_snprintf
 
 	inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
 	{
@@ -71,6 +71,7 @@
 	#include <unistd.h>
     #define MKDIR(x) mkdir(x, S_IRWXU) 
     #define STRTOK(a,b,c) strtok_r(a,b,c)
+    #define SNPRINTF(...) snprintf(__VA_ARGS__)
 #endif
 #include <sys/stat.h>
 #include "pocl_llvm.h"
@@ -227,7 +228,7 @@ CL_API_SUFFIX__VERSION_1_0
 
   if (program->binaries == NULL)
     {
-      snprintf (tmpdir, POCL_FILENAME_LENGTH, "%s/", program->temp_dir);
+      SNPRINTF (tmpdir, POCL_FILENAME_LENGTH, "%s/", program->temp_dir);
       MKDIR (tmpdir);
 
       /* FIXME: these might have allocated already. The user might want to
@@ -251,11 +252,11 @@ CL_API_SUFFIX__VERSION_1_0
         {
           program->binaries[device_i] = NULL;
           cl_device_id device = real_device_list[device_i];
-          snprintf (device_tmpdir, POCL_FILENAME_LENGTH, "%s/%s", 
+		  SNPRINTF (device_tmpdir, POCL_FILENAME_LENGTH, "%s/%s",
                     program->temp_dir, device->short_name);
           MKDIR (device_tmpdir);
 
-          snprintf 
+		  SNPRINTF
             (binary_file_name, POCL_FILENAME_LENGTH, "%s/%s", 
              device_tmpdir, POCL_PROGRAM_BC_FILENAME);
 
@@ -312,14 +313,14 @@ CL_API_SUFFIX__VERSION_1_0
       for (device_i = 0; device_i < real_num_devices; ++device_i)
         {
           int count;
-          count = snprintf (device_tmpdir, POCL_FILENAME_LENGTH, "%s/%s", 
+		  count = SNPRINTF (device_tmpdir, POCL_FILENAME_LENGTH, "%s/%s",
                     program->temp_dir, real_device_list[device_i]->short_name);
           MEM_ASSERT(count >= POCL_FILENAME_LENGTH, ERROR_CLEAN_PROGRAM);
 
           error = MKDIR (device_tmpdir);
           MEM_ASSERT(error, ERROR_CLEAN_PROGRAM);
 
-          count = snprintf 
+		  count = SNPRINTF
             (binary_file_name, POCL_FILENAME_LENGTH, "%s/%s", 
              device_tmpdir, POCL_PROGRAM_BC_FILENAME);
           MEM_ASSERT(count >= POCL_FILENAME_LENGTH, ERROR_CLEAN_PROGRAM);

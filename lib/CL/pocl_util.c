@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <direct.h>
 #define MKDIR(x) mkdir(x)
-
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
 void gen_random(char *s, const int len) {
 	static const char alphanum[] =
 		"0123456789"
@@ -47,44 +47,14 @@ void gen_random(char *s, const int len) {
 
 	s[len] = 0;
 }
-
 void mkdtemp(char *temp) {
 	int rnd_start = strlen(temp) - 6;
 	gen_random(&temp[rnd_start], 6);
 	MKDIR(temp);
 }
-
-// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
-#include <stdarg.h>
-#include <stdio.h>
-#define snprintf c99_snprintf
-
-inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
-{
-	int count = -1;
-
-	if (size != 0)
-		count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
-	if (count == -1)
-		count = _vscprintf(format, ap);
-
-	return count;
-}
-
-inline int c99_snprintf(char* str, size_t size, const char* format, ...)
-{
-	int count;
-	va_list ap;
-
-	va_start(ap, format);
-	count = c99_vsnprintf(str, size, format, ap);
-	va_end(ap);
-
-	return count;
-}
-
 #else
 #include <unistd.h>
+#define SNPRINTF(...) snprintf(__VA_ARGS__)
 #endif
 #include "pocl_util.h"
 #include "pocl_cl.h"
@@ -106,7 +76,7 @@ remove_directory (const char *path_name)
 {
   int str_size = 10 + strlen(path_name) + 1;
   char *cmd = (char*)malloc(str_size);
-  snprintf (cmd, str_size, "rm -fr '%s'", path_name);
+  SNPRINTF (cmd, str_size, "rm -fr '%s'", path_name);
   system (cmd);
   free (cmd);
 }

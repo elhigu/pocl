@@ -31,8 +31,10 @@
 #define R_OK    4       /* Test for read permission.  */
 #define W_OK    2       /* Test for write permission.  */
 #define F_OK    0       /* Test for existence.  */
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #else
 #include <unistd.h>
+#define SNPRINTF(...) snprintf(__VA_ARGS__)
 #endif
 #include "config.h"
 
@@ -70,11 +72,11 @@ llvm_codegen (const char* tmpdir, cl_kernel kernel, cl_device_id device) {
   int error;
   cl_program program = kernel->program;
 
-  error = snprintf 
+  error = SNPRINTF 
     (module, POCL_FILENAME_LENGTH,
      "%s/parallel.so", tmpdir);
   assert (error >= 0);
-  error = snprintf
+  error = SNPRINTF
     (objfile, POCL_FILENAME_LENGTH,
      "%s/parallel.so.o", tmpdir);
   assert (error >= 0);
@@ -82,7 +84,7 @@ llvm_codegen (const char* tmpdir, cl_kernel kernel, cl_device_id device) {
 
   if (access (module, F_OK) != 0)
     {
-      error = snprintf (bytecode, POCL_FILENAME_LENGTH,
+	  error = SNPRINTF(bytecode, POCL_FILENAME_LENGTH,
                         "%s/%s", tmpdir, POCL_PARALLEL_BC_FILENAME);
       assert (error >= 0);
       
@@ -90,7 +92,7 @@ llvm_codegen (const char* tmpdir, cl_kernel kernel, cl_device_id device) {
       assert (error == 0);
 
       // clang is used as the linker driver in LINK_CMD
-      error = snprintf (command, COMMAND_LENGTH,
+	  error = SNPRINTF(command, COMMAND_LENGTH,
                        LINK_CMD " " HOST_CLANG_FLAGS " " HOST_LD_FLAGS " "
                         "-o %s %s.o",
                        module,

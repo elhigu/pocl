@@ -29,8 +29,10 @@
 #define R_OK    4       /* Test for read permission.  */
 #define W_OK    2       /* Test for write permission.  */
 #define F_OK    0       /* Test for existence.  */
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #else
 #include <unistd.h>
+#define SNPRINTF(...) snprintf(__VA_ARGS__)
 #endif
 
 #include "config.h"
@@ -253,7 +255,7 @@ pocl_cpuinfo_append_cpu_name(cl_device_id device)
   /* create the descriptive long_name for device */
   int len = strlen (device->short_name) + (end-start) + 2;
   char *new_name = (char*)malloc (len);
-  snprintf (new_name, len, "%s-%s", device->short_name, start);
+  SNPRINTF(new_name, len, "%s-%s", device->short_name, start);
   device->long_name = new_name;
 
 }

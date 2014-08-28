@@ -5,6 +5,12 @@
 #include <CL/opencl.h>
 #include "poclu.h"
 
+#ifdef _MSC_VER
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
+#else
+#define SNPRINTF(...) snprintf(__VA_ARGS__)
+#endif
+
 #ifndef SRCDIR
 #  define SRCDIR="."
 #endif
@@ -38,7 +44,7 @@ int call_test(const char *name)
     goto error;
   }
 
-  snprintf(filename, filename_size, "%s/%s.cl", SRCDIR, name);
+  SNPRINTF(filename, filename_size, "%s/%s.cl", SRCDIR, name);
 
   /* read source code */
   source_file = fopen(filename, "r");

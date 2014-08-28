@@ -33,43 +33,15 @@
 #include <io.h>
 #include <stdlib.h>
 #include <direct.h>
-#define MKDIR(x) mkdir(x) 
 #define R_OK    4
 #define W_OK    2
 #define F_OK    0
-
-
-// http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
-#include <stdarg.h>
-#define snprintf c99_snprintf
-
-inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
-{
-	int count = -1;
-
-	if (size != 0)
-		count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
-	if (count == -1)
-		count = _vscprintf(format, ap);
-
-	return count;
-}
-
-inline int c99_snprintf(char* str, size_t size, const char* format, ...)
-{
-	int count;
-	va_list ap;
-
-	va_start(ap, format);
-	count = c99_vsnprintf(str, size, format, ap);
-	va_end(ap);
-
-	return count;
-}
-
+#define MKDIR(x) mkdir(x) 
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #else
 #include <unistd.h>
 #define MKDIR(x) mkdir(x, S_IRWXU) 
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #endif
 #include <errno.h>
 #include <string.h>
@@ -204,13 +176,13 @@ POname(clEnqueueNDRangeKernel)(cl_command_queue command_queue,
       (event_wait_list != NULL && num_events_in_wait_list == 0))
     return CL_INVALID_EVENT_WAIT_LIST;
 
-  snprintf (tmpdir, POCL_FILENAME_LENGTH, "%s/%s/%s/%zu-%zu-%zu", 
+  SNPRINTF (tmpdir, POCL_FILENAME_LENGTH, "%s/%s/%s/%zu-%zu-%zu", 
             kernel->program->temp_dir, command_queue->device->short_name, 
             kernel->name, 
             local_x, local_y, local_z);
   MKDIR (tmpdir);
 
-  error = snprintf
+  error = SNPRINTF
     (parallel_filename, POCL_FILENAME_LENGTH,
      "%s/%s", tmpdir, POCL_PARALLEL_BC_FILENAME);
   if (error < 0)
@@ -218,7 +190,7 @@ POname(clEnqueueNDRangeKernel)(cl_command_queue command_queue,
 
   if (kernel->program->llvm_irs[0] == NULL)
     {
-      error = snprintf
+	  error = SNPRINTF
         (kernel_filename, POCL_FILENAME_LENGTH,
          "%s/%s/%s/kernel.bc", kernel->program->temp_dir, 
          command_queue->device->short_name, kernel->name);

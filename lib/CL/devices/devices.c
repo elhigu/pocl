@@ -25,9 +25,11 @@
 #ifdef _MSC_VER
 	#include <io.h>
     #define STRTOK(a,b,c) strtok_s(a,b,c)
+    #define SNPRINTF(...) _snprintf(__VA_ARGS__)
 #else
 	#include <unistd.h>
     #define STRTOK(a,b,c) strtok_r(a,b,c)
+    #define SNPRINTF(...) snprintf(__VA_ARGS__)
 #endif
 
 #include <string.h>
@@ -220,7 +222,7 @@ pocl_init_devices()
           str_toupper(dev_name, pocl_device_ops[i].device_name);
           /* Check if there are device-specific parameters set in the
              POCL_DEVICEn_PARAMETERS env. */
-          if (snprintf (env_name, 1024, "POCL_%s%d_PARAMETERS", dev_name, j) < 0)
+		  if (SNPRINTF(env_name, 1024, "POCL_%s%d_PARAMETERS", dev_name, j) < 0)
             POCL_ABORT("Unable to generate the env string.");
 
           pocl_devices[dev_index].ops->init(&pocl_devices[dev_index], getenv(env_name));
