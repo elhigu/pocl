@@ -37,6 +37,14 @@
     #include <Windows.h>
     #define RESTRICT __restrict
     #define SNPRINTF(...) _snprintf(__VA_ARGS__)
+
+int posix_memalign(void **p, size_t align, size_t size) { 
+	void *buf = _aligned_malloc(size, align);
+	if (buf == NULL) return errno;
+	*p = buf;
+	return 0;
+}
+
 #else
     #include <unistd.h>
     #include <sys/time.h>
