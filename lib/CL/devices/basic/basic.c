@@ -45,6 +45,18 @@ int posix_memalign(void **p, size_t align, size_t size) {
 	return 0;
 }
 
+lt_dlhandle	lt_dlopen(const char* filename) {
+  return (lt_dlhandle)LoadLibrary(filename);
+}
+
+int lt_dlerror(void) {
+	return GetLastError();
+}
+
+void *lt_dlsym(void *handle, const char *symbol) {
+  return GetProcAddress(handle, symbol);
+}
+
 #else
     #include <unistd.h>
     #include <sys/time.h>

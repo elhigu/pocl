@@ -25,7 +25,7 @@
 #include "pocl_image_util.h"
 #include "assert.h"
 
-extern cl_int 
+cl_int 
 pocl_check_image_origin_region (const cl_mem image, 
                                 const size_t *origin, 
                                 const size_t *region)
@@ -46,7 +46,7 @@ pocl_check_image_origin_region (const cl_mem image,
   return CL_SUCCESS;
 }
 
-extern void
+void
 pocl_get_image_information (cl_channel_order ch_order, 
                             cl_channel_type ch_type,
                             int* channels_out,
@@ -128,7 +128,7 @@ pocl_write_image(cl_mem               image,
   return CL_SUCCESS;
 }
            
-extern cl_int         
+cl_int         
 pocl_read_image(cl_mem               image,
                 cl_device_id         device_id,
                 const size_t *       origin, /*[3]*/
