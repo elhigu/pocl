@@ -35,10 +35,14 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "pocl_cl.h"
+#include "pocl_icd.h"
+
 #include "devices.h"
 #include "common.h"
 #include "basic/basic.h"
 #include "pthread/pocl-pthread.h"
+
 
 #if defined(BUILD_SPU)
 #include "cellspu/cellspu.h"

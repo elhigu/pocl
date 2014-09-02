@@ -18,12 +18,18 @@ if(ENABLE_SPU)
   list(APPEND POCL_DEVICES_LINK_LIST "spe2")
 endif()
 
-
-add_library("pocl-devices" OBJECT
+set(POCL_DEVICES_SOURCES
         devices.h  devices.c
         bufalloc.c  dev_image.h
         common.h common.c
-        bufalloc.h  cpuinfo.c cpuinfo.h)
+        bufalloc.h  cpuinfo.c cpuinfo.h) 
+
+add_library("pocl-devices" OBJECT ${POCL_DEVICES_SOURCES})
 
 set(POCL_DEVICES_LINK_LIST ${POCL_DEVICES_LINK_LIST} PARENT_SCOPE)
 set(POCL_DEVICES_OBJS ${POCL_DEVICES_OBJS} PARENT_SCOPE)
+
+# With visual studio c++ compiler also for .c files
+if (MSVC)
+  SET_SOURCE_FILES_PROPERTIES( ${POCL_DEVICES_SOURCES} PROPERTIES LANGUAGE CXX )
+endif (MSVC)

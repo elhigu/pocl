@@ -309,9 +309,13 @@ if (!PATCH_EXEC)
 endif()
 
 if(WIN32)
+  # in windows we build libOpenCl.dll normally, and for ICD
+  # we just rename function names 
+  # in .dll with .defs (so far in theory)
   message(STATUS "TODO: We could use FindOpenCL.cmake to checkout if there is ICD loader installed in Windows.")
-  set(DEFAULT_ENABLE_ICD TRUE)
-  set(TESTS_USE_ICD TRUE)
+  set(DEFAULT_ENABLE_ICD FALSE)
+  set(TESTS_USE_ICD FALSE)
+  set(DIRECT_LINKAGE 1 CACHE INTERNAL "direct linkage")
 else()
   if(NOT DEFINED DEFAULT_ENABLE_ICD)
 

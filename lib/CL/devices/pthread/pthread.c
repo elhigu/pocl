@@ -31,6 +31,15 @@
 #ifdef _MSC_VER
 #include <io.h>
 #define RESTRICT __restrict
+#define SNPRINTF(...) _snprintf(__VA_ARGS__)
+
+int posix_memalign(void **p, size_t align, size_t size) { 
+	void *buf = _aligned_malloc(size, align);
+	if (buf == NULL) return errno;
+	*p = buf;
+	return 0;
+}
+
 #else
 #include <unistd.h>
 #define RESTRICT __restrict__
@@ -140,7 +149,7 @@ thread_arguments* new_thread_arguments ()
     }
   POCL_UNLOCK (ta_pool_lock);
     
-  return calloc (1, sizeof (thread_arguments));
+  return (thread_arguments*)calloc (1, sizeof (thread_arguments));
 }
 
 void free_thread_arguments (thread_arguments *ta)
@@ -221,7 +230,7 @@ pocl_pthread_init (cl_device_id device, const char* parameters)
 #ifdef CUSTOM_BUFFER_ALLOCATOR  
   if (mrm == NULL)
     {
-      mrm = malloc (sizeof (mem_regions_management));
+      mrm = (mem_regions_management*)malloc (sizeof (mem_regions_management));
       BA_INIT_LOCK (mrm->mem_regions_lock);
       mrm->mem_regions = NULL;
     }
@@ -653,7 +662,7 @@ workgroup_thread (void *p)
 #ifndef _MSC_VER
   void *arguments[ta->kernel->num_args + ta->kernel->num_locals];
 #else
-  void **arguments = malloc(sizeof(void*) * (ta->kernel->num_args + ta->kernel->num_locals));
+  void **arguments = (void**)malloc(sizeof(void*) * (ta->kernel->num_args + ta->kernel->num_locals));
 #endif
   struct pocl_argument *al;  
   unsigned i = 0;
