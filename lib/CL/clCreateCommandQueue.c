@@ -38,14 +38,14 @@ POname(clCreateCommandQueue)(cl_context context,
   if (properties > (1<<2)-1)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+    goto END_ERROR;
   }
 
   /* we don't handle out-of-order queues yet */
   if (properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
   {
     errcode = CL_INVALID_QUEUE_PROPERTIES;
-    goto ERROR;
+    goto END_ERROR;
   }
 
   for (i=0; i<context->num_devices; i++)
@@ -57,14 +57,14 @@ POname(clCreateCommandQueue)(cl_context context,
   if (found == CL_FALSE)
   {
     errcode = CL_INVALID_DEVICE; 
-    goto ERROR;
+    goto END_ERROR;
   }
 
   cl_command_queue command_queue = (cl_command_queue) malloc(sizeof(struct _cl_command_queue));
   if (command_queue == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+    goto END_ERROR;
   }
   
   POCL_INIT_OBJECT(command_queue);
@@ -78,7 +78,7 @@ POname(clCreateCommandQueue)(cl_context context,
     *errcode_ret = CL_SUCCESS;
   return command_queue;
 
-ERROR:
+END_ERROR:
     if(errcode_ret)
     {
         *errcode_ret = errcode;

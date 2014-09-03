@@ -50,19 +50,19 @@ CL_API_SUFFIX__VERSION_1_2
     if (context == NULL) 
       {
         errcode = CL_INVALID_CONTEXT;
-        goto ERROR;
+		goto END_ERROR;
       }  
     
     if (image_format == NULL)
       {
         errcode = CL_INVALID_IMAGE_FORMAT_DESCRIPTOR;
-        goto ERROR;
+		goto END_ERROR;
       }
 
     if (image_desc == NULL)
       {
         errcode = CL_INVALID_IMAGE_DESCRIPTOR;
-        goto ERROR;
+		goto END_ERROR;
       }
     
     if (image_desc->num_mip_levels != 0 || image_desc->num_samples != 0)
@@ -72,20 +72,20 @@ CL_API_SUFFIX__VERSION_1_2
       (context, flags, image_desc->image_type, 0, NULL, &num_entries);
     
     if (errcode != CL_SUCCESS || num_entries == 0)
-      goto ERROR;
+		goto END_ERROR;
 
 	supported_image_formats = (cl_image_format*) malloc(num_entries * sizeof(cl_image_format));
     if (supported_image_formats == NULL)
       {
         errcode = CL_OUT_OF_HOST_MEMORY;
-        goto ERROR;
+		goto END_ERROR;
       }
     
     errcode = POname(clGetSupportedImageFormats) (context, flags, 
             image_desc->image_type, num_entries, supported_image_formats, NULL);
     
     if (errcode != CL_SUCCESS)
-      goto ERROR;
+		goto END_ERROR;
     
     for (i = 0; i < num_entries; i++)
       {
@@ -99,7 +99,7 @@ CL_API_SUFFIX__VERSION_1_2
       }
     
     errcode = CL_IMAGE_FORMAT_NOT_SUPPORTED;
-    goto ERROR;
+	goto END_ERROR;
 
 TYPE_SUPPORTED:
 
@@ -139,7 +139,7 @@ TYPE_SUPPORTED:
     mem = POname(clCreateBuffer) (context, flags, size, host_ptr, &errcode);
 
     if (mem == NULL)
-      goto ERROR;
+		goto END_ERROR;
           
     mem->type = image_desc->image_type;
     mem->is_image = CL_TRUE;
@@ -176,7 +176,7 @@ TYPE_SUPPORTED:
     
     return mem;
     
- ERROR:
+END_ERROR:
     if (errcode_ret) 
       {
         *errcode_ret = errcode;

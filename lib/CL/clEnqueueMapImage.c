@@ -54,33 +54,33 @@ CL_API_SUFFIX__VERSION_1_0
   if (command_queue == NULL)
     {
       errcode =  CL_INVALID_COMMAND_QUEUE;
-      goto ERROR;
+	  goto END_ERROR;
     }
   if (image == NULL)
     {
       errcode = CL_INVALID_MEM_OBJECT;
-      goto ERROR;
+	  goto END_ERROR;
     }
   if (command_queue->context != image->context)
     {
       errcode = CL_INVALID_CONTEXT;
-      goto ERROR;
+	  goto END_ERROR;
     }
   if ((event_wait_list == NULL && num_events_in_wait_list != 0) ||
       (event_wait_list != NULL && num_events_in_wait_list == 0))
     {
       errcode = CL_INVALID_EVENT_WAIT_LIST;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   errcode = pocl_check_image_origin_region(image, origin, region);
   if (errcode != CL_SUCCESS)
-    goto ERROR;
+	  goto END_ERROR;
 
   if (image_row_pitch == NULL)
     {
       errcode = CL_INVALID_VALUE;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   if (image_slice_pitch == NULL && 
@@ -89,7 +89,7 @@ CL_API_SUFFIX__VERSION_1_0
        image->type == CL_MEM_OBJECT_IMAGE2D_ARRAY))
     {
       errcode = CL_INVALID_VALUE;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   /* TODO: more error checks */
@@ -100,7 +100,7 @@ CL_API_SUFFIX__VERSION_1_0
   if (mapping_info == NULL)
     {
       errcode = CL_OUT_OF_HOST_MEMORY;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   if (image->flags & CL_MEM_USE_HOST_PTR)
@@ -133,7 +133,7 @@ CL_API_SUFFIX__VERSION_1_0
     {
       POCL_UPDATE_EVENT_COMPLETE(event, command_queue);
       errcode = CL_MAP_FAILURE;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   mapping_info->host_ptr = map;
@@ -145,7 +145,7 @@ CL_API_SUFFIX__VERSION_1_0
                                  event, num_events_in_wait_list, 
                                  event_wait_list);
   if (errcode != CL_SUCCESS)
-    goto ERROR;
+	  goto END_ERROR;
       
   
   cmd->command.map.buffer = image;
@@ -166,7 +166,7 @@ CL_API_SUFFIX__VERSION_1_0
 
   return map;
  
- ERROR:
+END_ERROR:
   free (map);
   free (cmd);
   free (mapping_info);

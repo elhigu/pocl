@@ -43,20 +43,20 @@ POname(clCreateBuffer)(cl_context context,
   if (size == 0)
     {
       errcode = CL_INVALID_BUFFER_SIZE;
-      goto ERROR;
+      goto END_ERROR;
     }
 
   if (context == NULL)
     {
       errcode = CL_INVALID_CONTEXT;
-      goto ERROR;
+      goto END_ERROR;
     }
   
   mem = (cl_mem) malloc(sizeof(struct _cl_mem));
   if (mem == NULL)
     {
       errcode = CL_OUT_OF_HOST_MEMORY;
-      goto ERROR;
+      goto END_ERROR;
     }
   
   if (size == 0)
@@ -188,7 +188,7 @@ POname(clCreateBuffer)(cl_context context,
     }
  ERROR_CLEAN_MEM:
   free(mem);
- ERROR:
+ END_ERROR:
   if(errcode_ret)
     {
       *errcode_ret = errcode;

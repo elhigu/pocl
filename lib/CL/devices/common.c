@@ -67,7 +67,7 @@ llvm_codegen (const char* tmpdir, cl_kernel kernel, cl_device_id device) {
   char bytecode[POCL_FILENAME_LENGTH];
   char objfile[POCL_FILENAME_LENGTH];
 
-  char* module = malloc(min(POCL_FILENAME_LENGTH, 
+  char* module = (char*)malloc(min(POCL_FILENAME_LENGTH, 
 	   strlen(tmpdir) + strlen("/parallel.so") + 1)); 
   int error;
   cl_program program = kernel->program;

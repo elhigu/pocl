@@ -43,14 +43,14 @@ CL_API_SUFFIX__VERSION_1_2
                                  event, num_events_in_wait_list, 
                                  event_wait_list);
   if (errcode != CL_SUCCESS)
-    goto ERROR;
+	  goto END_ERROR;
 
   cmd->command.marker.data = command_queue->device->data;
   pocl_command_enqueue(command_queue, cmd);
         
   return CL_SUCCESS;
 
- ERROR:
+END_ERROR:
   free (event); 
   free (cmd);
   return errcode;

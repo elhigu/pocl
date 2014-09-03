@@ -18,14 +18,14 @@ CL_API_SUFFIX__VERSION_1_0
   if (context == NULL)
   {
     errcode = CL_INVALID_CONTEXT;
-    goto ERROR;
+	goto END_ERROR;
   }
   
   sampler = (cl_sampler) malloc(sizeof(struct _cl_sampler));
   if (sampler == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+	goto END_ERROR;
   }
   
   if (normalized_coords == CL_TRUE)
@@ -48,7 +48,7 @@ CL_API_SUFFIX__VERSION_1_0
 ERROR_CLEAN_SAMPLER:
   free(sampler);
 #endif
-ERROR:
+END_ERROR:
   if(errcode_ret)
   {
     *errcode_ret = errcode;

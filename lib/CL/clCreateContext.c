@@ -126,13 +126,13 @@ POname(clCreateContext)(const cl_context_properties * properties,
   if (devices == NULL || num_devices == 0)
     {
       errcode = CL_INVALID_VALUE;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   if (pfn_notify == NULL && user_data != NULL)
     {
       errcode = CL_INVALID_VALUE;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
 #ifndef _MSC_VER
@@ -144,7 +144,7 @@ POname(clCreateContext)(const cl_context_properties * properties,
   if (context == NULL)
     {
       errcode = CL_OUT_OF_HOST_MEMORY;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   POCL_INIT_OBJECT(context);
@@ -194,7 +194,7 @@ POname(clCreateContext)(const cl_context_properties * properties,
   free(context->properties);
  ERROR_CLEAN_CONTEXT:
   free(context);
- ERROR:
+END_ERROR:
   if(errcode_ret != NULL)
     {
       *errcode_ret = errcode;

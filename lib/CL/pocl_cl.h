@@ -30,10 +30,12 @@
 #include <stdio.h>
 
 #ifdef _MSC_VER
-typedef void* lt_dlhandle;
+#include <Windows.h>
+typedef HMODULE lt_dlhandle;
 #else
 #include <ltdl.h>
 #endif
+
 #include <pthread.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS

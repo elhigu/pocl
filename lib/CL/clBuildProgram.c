@@ -132,19 +132,19 @@ CL_API_SUFFIX__VERSION_1_0
   if (program == NULL)
   {
     errcode = CL_INVALID_PROGRAM;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   if (pfn_notify == NULL && user_data != NULL)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   if (program->kernels)
   {
     errcode = CL_INVALID_OPERATION;
-    goto ERROR;
+	goto END_ERROR;
   }
   
   if (options != NULL)
@@ -206,14 +206,14 @@ CL_API_SUFFIX__VERSION_1_0
   if (program->source == NULL && program->binaries == NULL)
   {
     errcode = CL_INVALID_PROGRAM;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   if ((num_devices > 0 && device_list == NULL) ||
       (num_devices == 0 && device_list != NULL))
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+	goto END_ERROR;
   }
       
   if (num_devices == 0)
@@ -353,7 +353,7 @@ ERROR_CLEAN_PROGRAM:
   program->binary_sizes = NULL;
 ERROR_CLEAN_OPTIONS:
   free (modded_options);
-ERROR:
+END_ERROR:
   return errcode;
 }
 POsym(clBuildProgram)

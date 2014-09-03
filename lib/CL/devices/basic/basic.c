@@ -38,7 +38,7 @@
     #define RESTRICT __restrict
     #define SNPRINTF(...) _snprintf(__VA_ARGS__)
 
-int posix_memalign(void **p, size_t align, size_t size) { 
+static int posix_memalign(void **p, size_t align, size_t size) { 
 	void *buf = _aligned_malloc(size, align);
 	if (buf == NULL) return errno;
 	*p = buf;
@@ -53,7 +53,7 @@ int lt_dlerror(void) {
 	return GetLastError();
 }
 
-void *lt_dlsym(void *handle, const char *symbol) {
+void *lt_dlsym(lt_dlhandle handle, const char *symbol) {
   return GetProcAddress(handle, symbol);
 }
 
@@ -484,7 +484,7 @@ pocl_basic_run
 #ifndef _MSC_VER
   void *arguments[kernel->num_args + kernel->num_locals];
 #else
-  void **arguments = malloc(sizeof(void*) * (kernel->num_args + kernel->num_locals));
+  void **arguments = (void**)malloc(sizeof(void*) * (kernel->num_args + kernel->num_locals));
 #endif
 
   /* Process the kernel arguments. Convert the opaque buffer
@@ -795,7 +795,7 @@ void check_compiler_cache (_cl_command_node *cmd)
           return;
         }
     }
-  ci = malloc (sizeof (compiler_cache_item));
+  ci = (compiler_cache_item*)malloc (sizeof (compiler_cache_item));
   ci->next = NULL;
   ci->tmp_dir = strdup(cmd->command.run.tmp_dir);
   ci->function_name = strdup (cmd->command.run.kernel->function_name);

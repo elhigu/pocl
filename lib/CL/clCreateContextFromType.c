@@ -52,13 +52,13 @@ POname(clCreateContextFromType)(const cl_context_properties *properties,
   if (context == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+    goto END_ERROR;
   }
 
   if (pfn_notify == NULL && user_data != NULL)
     {
       errcode = CL_INVALID_VALUE;
-      goto ERROR;
+      goto END_ERROR;
     }
 
   POCL_INIT_OBJECT(context);
@@ -105,7 +105,7 @@ ERROR_CLEAN_CONTEXT_AND_PROPERTIES:
   free(context->properties);
 /*ERROR_CLEAN_CONTEXT:*/
   free(context);
-ERROR:
+END_ERROR:
   if(errcode_ret)
   {
     *errcode_ret = errcode;

@@ -42,14 +42,14 @@ POname(clCreateSubBuffer)(cl_mem                   buffer,
   if (buffer == NULL || buffer->parent != NULL)
   {
     errcode = CL_INVALID_MEM_OBJECT;
-    goto ERROR;
+    goto END_ERROR;
   }
 
   if (buffer_create_type != CL_BUFFER_CREATE_TYPE_REGION ||
       buffer_create_info == NULL)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+    goto END_ERROR;
   }
 
   cl_buffer_region* info = 
@@ -58,20 +58,20 @@ POname(clCreateSubBuffer)(cl_mem                   buffer,
   if (info->size == 0)
   {
     errcode = CL_INVALID_BUFFER_SIZE;
-    goto ERROR;
+	goto END_ERROR;
   }
   
   if (info->size + info->origin > buffer->size)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   mem = (cl_mem) malloc(sizeof(struct _cl_mem));
   if (mem == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   POCL_INIT_OBJECT(mem);
@@ -172,7 +172,7 @@ ERROR_CLEAN_MEM_AND_DEVPTR:
 #endif
 ERROR_CLEAN_MEM:
     free(mem);
-ERROR:
+END_ERROR:
   if(errcode_ret)
   {
     *errcode_ret = errcode;

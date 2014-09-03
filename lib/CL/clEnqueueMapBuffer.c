@@ -75,7 +75,7 @@ POname(clEnqueueMapBuffer)(cl_command_queue command_queue,
   if (mapping_info == NULL)
     {
       errcode = CL_OUT_OF_HOST_MEMORY;
-      goto ERROR;
+      goto END_ERROR;
     }
 
   if (buffer->flags & CL_MEM_USE_HOST_PTR)
@@ -102,7 +102,7 @@ POname(clEnqueueMapBuffer)(cl_command_queue command_queue,
     {
       POCL_UPDATE_EVENT_COMPLETE(event, command_queue);
       errcode = CL_MAP_FAILURE;
-      goto ERROR;
+	  goto END_ERROR;
     }
 
   errcode = pocl_create_command (&cmd, command_queue, CL_COMMAND_MAP_BUFFER, 
@@ -110,7 +110,7 @@ POname(clEnqueueMapBuffer)(cl_command_queue command_queue,
                                  event_wait_list);
   
   if (errcode != CL_SUCCESS)
-      goto ERROR;
+	  goto END_ERROR;
   
   cmd->command.map.buffer = buffer;
   cmd->command.map.mapping = mapping_info;
@@ -136,7 +136,7 @@ POname(clEnqueueMapBuffer)(cl_command_queue command_queue,
   POCL_SUCCESS ();
   return host_ptr;
 
- ERROR:
+END_ERROR:
   if (event)
     free(*event);
   free(cmd);

@@ -42,14 +42,14 @@ POname(clCreateProgramWithSource)(cl_context context,
   if (count == 0)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   program = (cl_program) malloc(sizeof(struct _cl_program));
   if (program == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   POCL_INIT_OBJECT(program);
@@ -122,7 +122,7 @@ POname(clCreateProgramWithSource)(cl_context context,
 
 ERROR_CLEAN_PROGRAM:
   free(program);
-ERROR:
+END_ERROR:
   if(errcode_ret)
   {
     *errcode_ret = errcode;

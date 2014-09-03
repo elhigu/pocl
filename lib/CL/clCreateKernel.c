@@ -57,26 +57,26 @@ POname(clCreateKernel)(cl_program program,
   if (kernel_name == NULL)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+	goto END_ERROR;
   }
   
   if (program == NULL || program->num_devices == 0)
   {
     errcode = CL_INVALID_PROGRAM;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   if (program->binaries == NULL || program->binary_sizes == NULL)
   {
     errcode = CL_INVALID_PROGRAM_EXECUTABLE;
-    goto ERROR;
+    goto END_ERROR;
   }
 
   kernel = (cl_kernel) malloc(sizeof(struct _cl_kernel));
   if (kernel == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   POCL_INIT_OBJECT (kernel);
@@ -126,7 +126,7 @@ POname(clCreateKernel)(cl_program program,
 
 ERROR_CLEAN_KERNEL:
   free(kernel);
-ERROR:
+END_ERROR:
   if(errcode_ret != NULL)
   {
     *errcode_ret = errcode;

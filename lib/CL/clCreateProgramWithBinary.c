@@ -46,13 +46,13 @@ POname(clCreateProgramWithBinary)(cl_context                     context,
   if (device_list == NULL || num_devices == 0 || lengths == NULL)
   {
     errcode = CL_INVALID_VALUE;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   if (context == NULL)
   {
     errcode = CL_INVALID_CONTEXT;
-    goto ERROR;
+	goto END_ERROR;
   }
 
   total_binary_size = 0;
@@ -61,7 +61,7 @@ POname(clCreateProgramWithBinary)(cl_context                     context,
       if (lengths[i] == 0 || binaries[i] == NULL)
       {
         errcode = CL_INVALID_VALUE;
-        goto ERROR;
+		goto END_ERROR;
       }
       total_binary_size += lengths[i];
     }
@@ -77,7 +77,7 @@ POname(clCreateProgramWithBinary)(cl_context                     context,
       if (!found)
         {
           errcode = CL_INVALID_DEVICE;
-          goto ERROR;
+		  goto END_ERROR;
         }
     }
   
@@ -93,14 +93,14 @@ POname(clCreateProgramWithBinary)(cl_context                     context,
       if (count > 1)
         {
           errcode = CL_INVALID_DEVICE;
-          goto ERROR;
+		  goto END_ERROR;
         }
     }
   
   if ((program = (cl_program) malloc (sizeof (struct _cl_program))) == NULL)
   {
     errcode = CL_OUT_OF_HOST_MEMORY;
-    goto ERROR;
+	goto END_ERROR;
   }
   
   POCL_INIT_OBJECT(program);
@@ -160,7 +160,7 @@ ERROR_CLEAN_PROGRAM_AND_BINARIES:
   free(program->binary_sizes);
 /*ERROR_CLEAN_PROGRAM:*/
   free(program);
-ERROR:
+END_ERROR:
     if(errcode_ret != NULL)
       {
         *errcode_ret = errcode;

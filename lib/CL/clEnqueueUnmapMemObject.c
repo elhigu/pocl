@@ -73,7 +73,7 @@ POname(clEnqueueUnmapMemObject)(cl_command_queue command_queue,
                                  event, num_events_in_wait_list, 
                                  event_wait_list);
   if (errcode != CL_SUCCESS)
-    goto ERROR;
+	  goto END_ERROR;
   
   cmd->command.unmap.data = command_queue->device->data;
   cmd->command.unmap.memobj = memobj;
@@ -82,7 +82,7 @@ POname(clEnqueueUnmapMemObject)(cl_command_queue command_queue,
 
   return CL_SUCCESS;
 
- ERROR:
+END_ERROR:
   free (*event);
   free (cmd);
   return errcode;
