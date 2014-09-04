@@ -1,12 +1,12 @@
 set(LLVMPASSES_SOURCES "Barrier.h"
-                        "BarrierBlock.h" "BarrierBlock.cc"
-                        "Kernel.h" "Kernel.cc"
-                        "ParallelRegion.h" "ParallelRegion.cc"
-                        "CanonicalizeBarriers.h" "CanonicalizeBarriers.cc"
-                        "LoopBarriers.h" "LoopBarriers.cc"
-                        "GenerateHeader.cc" "Workgroup.h" "Workgroup.cc"
+            "BarrierBlock.h" "BarrierBlock.cc"
+            "Kernel.h" "Kernel.cc"
+            "ParallelRegion.h" "ParallelRegion.cc"
+            "CanonicalizeBarriers.h" "CanonicalizeBarriers.cc"
+            "LoopBarriers.h" "LoopBarriers.cc"
+            "GenerateHeader.cc" "Workgroup.h" "Workgroup.cc"
             "BarrierTailReplication.h" "BarrierTailReplication.cc"
-                        "Flatten.cc" "IsolateRegions.h" "IsolateRegions.cc"
+            "Flatten.cc" "IsolateRegions.h" "IsolateRegions.cc"
             "WorkitemReplication.h" "WorkitemReplication.cc"
             "ImplicitLoopBarriers.h" "ImplicitLoopBarriers.cc"
             "WorkItemAliasAnalysis.cc" "WIVectorize.cc"
@@ -22,7 +22,6 @@ set(LLVMPASSES_SOURCES "Barrier.h"
             "AutomaticLocals.cc" "ImplicitConditionalBarriers.cc"
             "ImplicitConditionalBarriers.h"
             "DebugHelpers.h" "DebugHelpers.cc")
-
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${LLVM_CFLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LLVM_CXXFLAGS}")
@@ -48,6 +47,7 @@ endif()
 # http://www.cmake.org/cmake/help/v2.8.12/cmake.html#prop_tgt:ENABLE_EXPORTS
 # http://www.cmake.org/pipermail/cmake/2011-November/047708.html
 set_target_properties("llvmopencl" PROPERTIES LINK_FLAGS "${LLVM_LDFLAGS} ${ADD_LD_FLAGS}")
+
 if(NOT APPLE)
   set_target_properties("llvmopencl" PROPERTIES SOVERSION "${KERNEL_COMPILER_LIB_VERSION}" VERSION "${KERNEL_COMPILER_LIB_VERSION}")
 endif()
