@@ -34,6 +34,7 @@ add_library("llvmpasses" OBJECT ${LLVMPASSES_SOURCES})
 # This creates a separate llvmopencl.so that is loaded to 'opt'
 # for the pocl-workgroup version.
 #pkglib_LTLIBRARIES = llvmopencl.la
+
 add_library("llvmopencl" MODULE "$<TARGET_OBJECTS:llvmpasses>")
 
 # TODO cmake should handle this, i might me missing something …
@@ -42,6 +43,13 @@ if(APPLE)
 else()
   set(ADD_LD_FLAGS "-Wl,-export-dynamic")
 endif()
+
+# TODO: why linux may link this without any target_link_libraries? 
+#       nobody has tried static compilation I suppose....
+if (MSVC)
+  target_link_libraries("llvmopencl" ${MSVC_POCL_LLVM_LIBS})
+endif ()
+
 
 # TODO ENABLE_EXPORTS -> Wl,export_dynamic
 # http://www.cmake.org/cmake/help/v2.8.12/cmake.html#prop_tgt:ENABLE_EXPORTS

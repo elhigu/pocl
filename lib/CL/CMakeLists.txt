@@ -115,7 +115,6 @@ set(POCL_PUBLIC_LINK_LIST "-lstdc++" "${LTDL_LIB}" ${POCL_DEVICES_LINK_LIST})
 #      environment already in base configuration e.g. if we need to use static libs and 
 #      if we need some special flags etc.
 set(POCL_PRIVATE_LINK_LIST ${POCL_LLVM_LIBS})
-separate_arguments(POCL_PRIVATE_LINK_LIST)
 list(APPEND POCL_PRIVATE_LINK_LIST -lclangFrontend -lclangDriver -lclangParse -lclangSema -lclangEdit -lclangLex -lclangSerialization -lclangBasic -lclangFrontendTool -lclangRewriteFrontend -lclangStaticAnalyzerFrontend -lclangStaticAnalyzerCore -lclangAnalysis -lclangCodeGen -lclangAST)
 
 # There is no dynamic llvm libs for windows -> change list to static .lib refs
@@ -150,7 +149,12 @@ install(TARGETS "pocl"
 if(DIRECT_LINKAGE)
   add_library("OpenCL" ${LIBPOCL_OBJS})
   set_target_properties("OpenCL" PROPERTIES SOVERSION "${LIB_API_VERSION}" VERSION "${LIB_BUILD_VERSION}" LINK_FLAGS "${LLVM_LDFLAGS} ${ICD_LD_FLAGS}")
-  target_link_libraries("OpenCL" PUBLIC ${POCL_PUBLIC_LINK_LIST} PRIVATE ${POCL_PRIVATE_LINK_LIST} )
+  if (MSVC)
+    target_link_libraries("OpenCL" ${LLVM_MSVC_STATIC_LIB_LIST} ${Hwloc_LIBRARIES} ${Pthreads_LIBRARIES})
+  else()
+    target_link_libraries("OpenCL" PUBLIC ${POCL_PUBLIC_LINK_LIST} PRIVATE ${POCL_PRIVATE_LINK_LIST} )
+  endif ()
+
   if(NOT ENABLE_ICD)
     install(TARGETS "OpenCL"
           LIBRARY DESTINATION ${POCL_INSTALL_PUBLIC_LIBDIR}

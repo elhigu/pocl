@@ -249,6 +249,17 @@ else()
   endif()
 endif()
 
+# TODO: fix correctly to setup configuratoin in windows to be static compilation....
+if (MSVC)
+  separate_arguments(POCL_LLVM_LIBS)
+  SET(MSVC_POCL_LLVM_LIBS "")
+  foreach(LIBFLAG ${POCL_LLVM_LIBS})
+    STRING(REGEX REPLACE "^-l" "" STATIC_LIB_NAME ${LIBFLAG})
+    list(APPEND MSVC_POCL_LLVM_LIBS "${STATIC_LIB_NAME}.lib")
+  endforeach()
+  message(STATUS "MSVC_POCL_LLVM_LIBS: ${MSVC_POCL_LLVM_LIBS}")
+endif(MSVC)
+
 ######################################################################################
 
 option(CUSTOM_BUFFER_ALLOCATOR "Use a custom OpenCL optimized region-based memory allocator instead of allocating buffers with malloc directly" ON)

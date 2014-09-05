@@ -5,8 +5,11 @@ set_target_properties("poclu" PROPERTIES SOVERSION "${LIB_API_VERSION}" VERSION 
 
 #libpoclu_la_LIBADD = @OPENCL_LIBS@
 # not sure about -lm
-target_link_libraries("poclu" "-lm" ${OPENCL_LIBS})
-
+if (MSVC)
+  target_link_libraries("poclu" OpenCL)
+else()
+  target_link_libraries("poclu" "-lm" ${OPENCL_LIBS})
+endif()
 
 install(TARGETS "poclu"
         LIBRARY DESTINATION ${POCL_INSTALL_PUBLIC_LIBDIR}
