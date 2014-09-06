@@ -55,7 +55,7 @@ needs_swap(cl_device_id device)
 #endif
 }
 
-cl_int
+POCLU_API cl_int POCLU_CALL
 poclu_bswap_cl_int(cl_device_id device, cl_int original) 
 {
   if (!needs_swap (device)) return original;
@@ -63,7 +63,7 @@ poclu_bswap_cl_int(cl_device_id device, cl_int original)
   return original;
 }
 
-cl_half
+POCLU_API cl_half POCLU_CALL
 poclu_bswap_cl_half(cl_device_id device, cl_half original)
 {
   if (!needs_swap (device)) return original;
@@ -71,7 +71,7 @@ poclu_bswap_cl_half(cl_device_id device, cl_half original)
   return original;
 }
 
-cl_float
+POCLU_API cl_float POCLU_CALL
 poclu_bswap_cl_float(cl_device_id device, cl_float original)
 {
   if (!needs_swap (device)) return original;
@@ -79,7 +79,7 @@ poclu_bswap_cl_float(cl_device_id device, cl_float original)
   return original;
 }
 
-void
+POCLU_API void POCLU_CALL
 poclu_bswap_cl_int_array(cl_device_id device, cl_int* array, 
                          size_t num_elements)
 {
@@ -91,7 +91,7 @@ poclu_bswap_cl_int_array(cl_device_id device, cl_int* array,
     }
 }
 
-void
+POCLU_API void POCLU_CALL
 poclu_bswap_cl_half_array(cl_device_id device, cl_half* array, 
                            size_t num_elements)
 {
@@ -103,7 +103,7 @@ poclu_bswap_cl_half_array(cl_device_id device, cl_half* array,
     }
 }
 
-void
+POCLU_API void POCLU_CALL
 poclu_bswap_cl_float_array(cl_device_id device, cl_float* array, 
                            size_t num_elements)
 {
@@ -115,7 +115,7 @@ poclu_bswap_cl_float_array(cl_device_id device, cl_float* array,
     }
 }
 
-void
+POCLU_API void POCLU_CALL
 poclu_bswap_cl_float2_array(cl_device_id device, cl_float2* array, 
                             size_t num_elements)
 {

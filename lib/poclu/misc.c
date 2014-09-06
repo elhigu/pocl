@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include "config.h"
 
-cl_context
+POCLU_API cl_context POCLU_CALL
 poclu_create_any_context() 
 {
   cl_uint i;
@@ -54,7 +54,7 @@ poclu_create_any_context()
   return context;
 }
 
-cl_int
+POCLU_API cl_int POCLU_CALL
 poclu_get_any_device( cl_context *context, cl_device_id *device, cl_command_queue *queue)
 {
   cl_int err;  
@@ -84,7 +84,7 @@ poclu_get_any_device( cl_context *context, cl_device_id *device, cl_command_queu
   return CL_SUCCESS;
 }
 
-char *
+POCLU_API char * POCLU_CALL
 poclu_read_file(char *filename)
 {
   FILE *file;
@@ -116,7 +116,7 @@ poclu_read_file(char *filename)
   case ERR: \
     { fprintf(stderr, "" #ERR " in %s on line %i\n", func_name, line); return 1; }
 
-int check_cl_error(cl_int cl_err, int line, const char* func_name) {
+POCLU_API int POCLU_CALL check_cl_error(cl_int cl_err, int line, const char* func_name) {
 
   switch(cl_err)
   {

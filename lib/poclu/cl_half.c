@@ -34,7 +34,7 @@ typedef union
   float f;
 } FloatConvUnion;
 
-cl_half
+POCLU_API cl_half POCLU_CALL
 poclu_float_to_cl_half(float value) 
 {
   FloatConvUnion u;
@@ -55,7 +55,7 @@ poclu_float_to_cl_half(float value)
 #define NAN 0.0/0.0
 #endif
 
-float
+POCLU_API float POCLU_CALL
 poclu_cl_half_to_float(cl_half value) 
 {
   if (value == 0xFC00) {
