@@ -43,6 +43,11 @@ add_executable("test_assign_loop_variable_to_privvar_makes_it_local"
 target_link_libraries("test_assign_loop_variable_to_privvar_makes_it_local"
                ${POCLU_LINK_OPTIONS})
 
+if (MSVC)
+	SET_SOURCE_FILES_PROPERTIES( test_assign_loop_variable_to_privvar_makes_it_local.c 
+		PROPERTIES LANGUAGE CXX )
+endif (MSVC)
+
 
 ######################################################################
 

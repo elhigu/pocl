@@ -6,8 +6,11 @@ add_definitions("-DSRCDIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 ${OPENCL_CFLAGS}")
 add_compile_options(${OPENCL_CFLAGS})
 
-
 add_executable("example2" example2.c example2.cl)
+
+if (MSVC)
+	SET_SOURCE_FILES_PROPERTIES( example2.c PROPERTIES LANGUAGE CXX )
+endif (MSVC)
 
 # example1_LDADD = @OPENCL_LIBS@ ../../lib/poclu/libpoclu.la
 target_link_libraries("example2" ${POCLU_LINK_OPTIONS})

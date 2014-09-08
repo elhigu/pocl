@@ -32,6 +32,14 @@
 #define HEIGHT 4096
 #define PADDING 32
 
+#ifdef _MSC_VER
+#define SRAND48(x) srand(x)
+#define DRAND48() (double(rand()) / RAND_MAX)
+#else
+#define SRAND48(x) srand48(x)
+#define DRAND48() drand48()
+#endif
+
 static void delete_memobjs(cl_mem *memobjs, int n) ;
 
 int
@@ -75,11 +83,11 @@ main (void)
   input = (cl_float *) malloc (WIDTH * HEIGHT * sizeof (cl_float));
   output = (cl_float *) malloc (WIDTH * (HEIGHT + PADDING) * sizeof (cl_float));
 
-  srand48(0);
+  SRAND48(0);
   for (i = 0; i < HEIGHT; ++i)
     {
       for (j = 0; j < WIDTH; ++j)
-	input[i * WIDTH + j] = drand48();
+	input[i * WIDTH + j] = DRAND48();
     }
   
   context = poclu_create_any_context();
