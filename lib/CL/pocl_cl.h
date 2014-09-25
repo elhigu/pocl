@@ -28,7 +28,9 @@
 #include "config.h"
 #include <assert.h>
 #include <stdio.h>
-#include <ltdl.h>
+#ifndef _MSC_VER
+#  include <ltdl.h>
+#endif
 #include <pthread.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
