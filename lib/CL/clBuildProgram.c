@@ -25,8 +25,12 @@
 #include "pocl_cl.h"
 #include <assert.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/stat.h>
+#ifndef _MSC_VER
+#  include <unistd.h>
+#else
+#  include "vccompat.hpp"
+#endif
 #include "pocl_llvm.h"
 
 /* supported compiler parameters which should pass to the frontend directly
