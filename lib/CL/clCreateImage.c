@@ -71,7 +71,7 @@ CL_API_SUFFIX__VERSION_1_2
     if (errcode != CL_SUCCESS || num_entries == 0)
       goto ERROR;
 
-    supported_image_formats = (const cl_image_format*) malloc (num_entries * sizeof(cl_image_format));
+    supported_image_formats = (cl_image_format*) malloc (num_entries * sizeof(cl_image_format));
     if (supported_image_formats == NULL)
       {
         errcode = CL_OUT_OF_HOST_MEMORY;
