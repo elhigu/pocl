@@ -28,12 +28,12 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
+#include <time.h>
 
 #ifndef _MSC_VER
+#  include <dirent.h>
 #  include <unistd.h>
 #  include <utime.h>
-#  include <time.h>
 #else
 #  include "vccompat.hpp"
 #endif
@@ -43,6 +43,7 @@
 #include "utlist.h"
 #include "common.h"
 #include "pocl_mem_management.h"
+#include "pocl_runtime_config.h"
 
 #define CACHE_DIR_PATH_CHARS 512
 
